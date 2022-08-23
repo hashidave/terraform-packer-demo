@@ -10,6 +10,7 @@ provider "aws" {
       Owner = "Dave"
       Demo       = "GoldenImage"
     }
+  }  
 }
 
 #
