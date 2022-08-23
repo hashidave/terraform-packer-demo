@@ -5,6 +5,11 @@ provider "hcp" {}
 
 provider "aws" {
   region = var.region
+  default_tags {
+    tags = {
+      Owner = "Dave"
+      Demo       = "GoldenImage"
+    }
 }
 
 #
