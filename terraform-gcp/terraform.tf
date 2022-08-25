@@ -11,7 +11,7 @@ terraform {
   }
 
   cloud {
-    organization = "ericreeves-demo"
+    organization = "hashi-DaveR"
     hostname     = "app.terraform.io"
 
     workspaces {
