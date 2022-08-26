@@ -31,7 +31,7 @@ resource "google_compute_instance" "terraform_instance" {
   project      = var.gcp_project
   zone         = var.zone
   machine_type = var.vm_type
-  tags = ["Butters", "Grail"]
+  tags = ["web-server", "Butters", "Grail"]
   
   
   #metadata = {
@@ -72,7 +72,6 @@ resource "google_compute_instance" "terraform_instance" {
   service_account {
     scopes = ["https://www.googleapis.com/auth/compute.readonly"]
   }
-  tags = ["web-server"]
 }
 
 
