@@ -2,7 +2,7 @@
 # HCP Packer Configuration
 #---------------------------------------------------------------------------------------
 variable "hcp_bucket_name" {
-  default = "acme-base"
+  default = "acme-webapp"
 }
 
 variable "hcp_channel" {
