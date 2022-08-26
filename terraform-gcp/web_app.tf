@@ -31,7 +31,9 @@ resource "google_compute_instance" "terraform_instance" {
   project      = var.gcp_project
   zone         = var.zone
   machine_type = var.vm_type
-  tags = ["web-server", "Butters", "Grail"]
+  
+  #NOTE:  Tags have to be lower case!!
+  tags = ["web-server", "butters", "grail"]
   
   
   #metadata = {
