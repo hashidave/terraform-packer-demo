@@ -32,9 +32,9 @@ resource "google_compute_instance" "terraform_instance" {
   zone         = var.zone
   machine_type = var.vm_type
 
-  metadata = {
-    ssh-keys = "${var.admin}:${file("id_rsa.pub")}"
-  }
+  #metadata = {
+  #  ssh-keys = "${var.admin}:${file("id_rsa.pub")}"
+  #}
 
   network_interface {
     network            = google_compute_network.terraform_vpc.self_link
