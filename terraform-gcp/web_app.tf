@@ -6,7 +6,7 @@ variable "hcp_bucket_name" {
 }
 
 variable "hcp_channel" {
-  default = "production"
+  default = "dev"
 }
 
 data "hcp_packer_iteration" "ubuntu" {
