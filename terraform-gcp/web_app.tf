@@ -41,7 +41,7 @@ resource "google_compute_instance" "terraform_instance" {
   #}
 
   network_interface {
-    network            = "${module.terraform_vpc.newtwork_self_link}"
+    network            = "${module.terraform_vpc.network_self_link}"
     subnetwork         = google_compute_subnetwork.terraform_sub.self_link
     subnetwork_project = var.gcp_project
     network_ip         = var.private_ip
