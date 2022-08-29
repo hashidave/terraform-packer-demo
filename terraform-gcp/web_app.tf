@@ -33,7 +33,7 @@ resource "google_compute_instance" "terraform_instance" {
   machine_type = var.vm_type
   
   #NOTE:  Tags have to be lower case!!
-  tags = ["web-server", "butters", "grail"]
+  tags = ["web-server", "butters", "foo", "grail"]
   
   
   #metadata = {
