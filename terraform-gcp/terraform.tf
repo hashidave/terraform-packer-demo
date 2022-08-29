@@ -8,12 +8,13 @@ terraform {
       source  = "hashicorp/google"
       version = "3.5.0"
     }
-    module "network_vpc" {
-      source  = "terraform-google-modules/network/google//modules/vpc"
-      version = "5.2.0"
-    }
+    
   }
   
+  module "network_vpc" {
+      source  = "terraform-google-modules/network/google//modules/vpc"
+      version = "5.2.0"
+  }
   
   cloud {
     organization = "hashi-DaveR"
