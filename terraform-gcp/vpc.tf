@@ -22,7 +22,7 @@ resource "google_compute_subnetwork" "terraform_sub" {
   name                     = var.subnet_name
   ip_cidr_range            = var.subnet_cidr
   region                   = var.region
-  network                  = module.terraform_vpc.network_name
+  network                  = module.terraform_vpc.google_compute_network.network.name
   description              = "Terraform Demo Subnet"
   private_ip_google_access = "true"
 }
