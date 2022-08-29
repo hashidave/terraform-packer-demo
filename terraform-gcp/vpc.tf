@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------------------
 # VPC
 #---------------------------------------------------------------------------------------
-resource "network_vpc" "terraform_vpc" {
+resource "google_compute_network" "terraform_vpc" {
   project                 = var.gcp_project
   name                    = "terraform-vpc"
   auto_create_subnetworks = false
