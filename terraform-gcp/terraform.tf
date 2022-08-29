@@ -26,4 +26,6 @@ terraform {
 module "network_vpc" {
       source  = "terraform-google-modules/network/google//modules/vpc"
       version = "5.2.0"
+      network_name="dave-test-net"
+      project_id="{var.gcp_project}"
 }
