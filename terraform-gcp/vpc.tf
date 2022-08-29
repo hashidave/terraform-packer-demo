@@ -34,7 +34,7 @@ resource "google_compute_subnetwork" "terraform_sub" {
 resource "google_compute_firewall" "web-server" {
   project     = var.gcp_project
   name        = "allow-http-rule"
-  network     = module.terraform_vpc.newtork_name
+  network     = "${module.terraform_vpc.network_name}"
   description = "Creates firewall rule targeting tagged instances"
 
   allow {
