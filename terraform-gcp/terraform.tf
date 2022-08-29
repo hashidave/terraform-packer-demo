@@ -11,10 +11,7 @@ terraform {
     
   }
   
-  module "network_vpc" {
-      source  = "terraform-google-modules/network/google//modules/vpc"
-      version = "5.2.0"
-  }
+  
   
   cloud {
     organization = "hashi-DaveR"
@@ -24,4 +21,9 @@ terraform {
       name = "packer-terraform-demo"
     }
   }
+}
+
+module "network_vpc" {
+      source  = "terraform-google-modules/network/google//modules/vpc"
+      version = "5.2.0"
 }
