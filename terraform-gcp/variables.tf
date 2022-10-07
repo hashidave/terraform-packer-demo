@@ -2,7 +2,7 @@
 # GCP Project and Region
 #--------------------------------------------------------------------------------------
 variable "gcp_project" {
-  default = "eric-terraform"
+  default = "mystical-glass-360520"
 }
 
 variable "region" {
@@ -38,7 +38,7 @@ variable "firewall_name" {
 }
 
 variable "subnetwork_project" {
-  default     = "eric-terraform"
+  default     = "mystical-glass-360520"
 }
 
 variable "instances_name" {

@@ -2,11 +2,11 @@
 # HCP Packer Configuration
 #---------------------------------------------------------------------------------------
 variable "hcp_bucket_name" {
-  default = "acme-base"
+  default = "acme-webapp"
 }
 
 variable "hcp_channel" {
-  default = "production"
+  default = "Dev"
 }
 
 data "hcp_packer_iteration" "ubuntu" {
@@ -31,13 +31,17 @@ resource "google_compute_instance" "terraform_instance" {
   project      = var.gcp_project
   zone         = var.zone
   machine_type = var.vm_type
-
-  metadata = {
-    ssh-keys = "${var.admin}:${file("id_rsa.pub")}"
-  }
+  
+  #NOTE:  Tags have to be lower case!!
+  tags = ["web-server", "lunch", "butters", "foo", "grail", "neegan", "robotvacuum"]
+  
+  
+  #metadata = {
+  #  ssh-keys = "${var.admin}:${file("id_rsa.pub")}"
+  #}
 
   network_interface {
-    network            = google_compute_network.terraform_vpc.self_link
+    network            = "${module.terraform_vpc.network_self_link}"
     subnetwork         = google_compute_subnetwork.terraform_sub.self_link
     subnetwork_project = var.gcp_project
     network_ip         = var.private_ip
@@ -70,7 +74,6 @@ resource "google_compute_instance" "terraform_instance" {
   service_account {
     scopes = ["https://www.googleapis.com/auth/compute.readonly"]
   }
-  tags = ["web-server"]
 }
 
 

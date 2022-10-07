@@ -6,8 +6,9 @@ terraform {
     }
     google = {
       source  = "hashicorp/google"
-      version = "3.5.0"
+      version = ">3.5.0"
     }
+    
   }
   
   module "network_vpc" {
@@ -15,10 +16,10 @@ terraform {
     version = "5.2.0"
     # insert required variables here 
   }
-  
+ 
   
   cloud {
-    organization = "ericreeves-demo"
+    organization = "hashi-DaveR"
     hostname     = "app.terraform.io"
 
     workspaces {
@@ -26,3 +27,4 @@ terraform {
     }
   }
 }
+

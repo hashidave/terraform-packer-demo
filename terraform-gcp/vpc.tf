@@ -1,10 +1,17 @@
 #---------------------------------------------------------------------------------------
 # VPC
 #---------------------------------------------------------------------------------------
-resource "google_compute_network" "terraform_vpc" {
-  project                 = var.gcp_project
-  name                    = "terraform-vpc"
-  auto_create_subnetworks = false
+#resource "google_compute_network" "terraform_vpc" {
+#  project                 = var.gcp_project
+#  name                    = "terraform-vpc"
+#  auto_create_subnetworks = false
+#}
+
+module "terraform_vpc" {
+      source  = "terraform-google-modules/network/google//modules/vpc"
+      version = "5.2.0"
+      network_name="dave-test-net"
+      project_id=var.gcp_project
 }
 
 
@@ -15,7 +22,7 @@ resource "google_compute_subnetwork" "terraform_sub" {
   name                     = var.subnet_name
   ip_cidr_range            = var.subnet_cidr
   region                   = var.region
-  network                  = google_compute_network.terraform_vpc.name
+  network                  = "${module.terraform_vpc.network_name}"
   description              = "Terraform Demo Subnet"
   private_ip_google_access = "true"
 }
@@ -27,7 +34,7 @@ resource "google_compute_subnetwork" "terraform_sub" {
 resource "google_compute_firewall" "web-server" {
   project     = var.gcp_project
   name        = "allow-http-rule"
-  network     = google_compute_network.terraform_vpc.name
+  network     = "${module.terraform_vpc.network_name}"
   description = "Creates firewall rule targeting tagged instances"
 
   allow {
