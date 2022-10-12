@@ -22,8 +22,9 @@ resource "aws_instance" "hashicat" {
   vpc_security_group_ids      = [aws_security_group.hashicat.id]
   count =2
   tags = {
-    "web-server", 
-    "lunch", "butters", 
+    Type="web-server", 
+    Meal="lunch", 
+    Character="Butters", 
     Name = "${var.prefix}-HashiCat-Web-App"
   }
 }
