@@ -9,6 +9,7 @@ provider "aws" {
     tags = {
       Owner = "Dave"
       Demo       = "GoldenImage"
+      Dev = "True"
     }
   }  
 }
