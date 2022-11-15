@@ -10,7 +10,7 @@ provider "aws" {
       Owner = "Dave"
       Demo       = "GoldenImage"
       Dev = "True"
-      Rep = "Doug"
+      Rep = "Tim"
     }
   }  
 }
