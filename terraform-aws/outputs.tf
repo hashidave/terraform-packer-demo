@@ -15,7 +15,7 @@ output "catapp_ip" {
 }
 
 output "catapp_url2" {
-  value = "http://${aws_eip.hashicat2.*.public_dns}"
+  value = "http://" + {aws_eip.hashicat2.*.public_dns}
 }
 
 output "catapp_ip2" {
