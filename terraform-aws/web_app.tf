@@ -20,7 +20,7 @@ resource "aws_instance" "hashicat" {
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.hashicat.id
   vpc_security_group_ids      = [aws_security_group.hashicat.id]
-  count =2
+  count =var.server_count
   tags = {
     Type="web-server", 
     Meal="lunch", 
@@ -30,7 +30,7 @@ resource "aws_instance" "hashicat" {
 }
 
 resource "aws_eip" "hashicat" {
-  count = 2
+  count = var.server_count
   instance = aws_instance.hashicat[count.index].id
   vpc      = true
 }
@@ -69,7 +69,7 @@ resource "aws_instance" "hashicat2" {
     Name = "${var.prefix}-HashiCat-Web-App2"
   }
   
-  count=0
+  count=var.server_count
 
   connection {
     type     = "ssh"
@@ -87,13 +87,15 @@ resource "aws_instance" "hashicat2" {
 }
 
 resource "aws_eip" "hashicat2" {
-  instance = aws_instance.hashicat2.id
+  count=var.server_count
+  instance = aws_instance.hashicat2[count.index].id
   vpc      = true
 }
 
 resource "aws_eip_association" "hashicat2" {
-  instance_id   = aws_instance.hashicat2.id
-  allocation_id = aws_eip.hashicat2.id
+  count=var.server_count
+  instance_id   = aws_instance.hashicat2[count.index].id
+  allocation_id = aws_eip.hashicat2[count.index].id
 }
 
 resource "tls_private_key" "hashicat2" {
@@ -139,13 +141,15 @@ resource "aws_spot_instance_request" "hashicat_spot" {
 }
 
 resource "aws_eip" "hashicat_spot" {
-  instance = aws_spot_instance_request.hashicat_spot.spot_instance_id
+  count=var.spot_instance_count
+  instance = aws_spot_instance_request.hashicat_spot[count.index].spot_instance_id
   vpc      = true
 }
 
 resource "aws_eip_association" "hashicat_spot" {
-  instance_id   = aws_spot_instance_request.hashicat_spot.spot_instance_id
-  allocation_id = aws_eip.hashicat_spot.id
+  count=var.spot_instance_count
+  instance_id   = aws_spot_instance_request.hashicat_spot[count.index].spot_instance_id
+  allocation_id = aws_eip.hashicat_spot[count.index].id
 }
 
 
