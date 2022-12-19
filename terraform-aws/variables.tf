@@ -29,3 +29,13 @@ variable "instance_type" {
   description = "Specifies the AWS instance type."
   default     = "t2.micro"
 }
+
+variable "server_count" {
+  description = "Specifies the number of instances to create."
+  default     = "1"
+}
+
+variable "spot_instance_count" {
+  description = "Specifies the number of spot instances to create."
+  default     = "0"
+}
