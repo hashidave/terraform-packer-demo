@@ -36,7 +36,7 @@ resource "aws_eip" "hashicat" {
 }
 
 resource "aws_eip_association" "hashicat" {
-  count=2 
+  count=var.server_count
   instance_id   = aws_instance.hashicat[count.index].id
   allocation_id = aws_eip.hashicat[count.index].id
 }
@@ -68,7 +68,8 @@ resource "aws_instance" "hashicat2" {
   tags = {
     Name = "${var.prefix}-HashiCat-Web-App2"
   }
-
+  
+  count=0
 
   connection {
     type     = "ssh"
@@ -119,7 +120,8 @@ resource "aws_spot_instance_request" "hashicat_spot" {
   tags = {
     Name = "${var.prefix}-HashiCat-Web-App_Spot"
   }
-
+  
+  count=var.spot_instance_count
 
   connection {
     type     = "ssh"
