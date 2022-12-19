@@ -12,6 +12,7 @@ output "catapp_url" {
 
 output "private_key"{
   value=tls_private_key.hashicat.private_key_openssh   
+  sensitive=true
 }
 
 
