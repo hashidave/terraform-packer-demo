@@ -39,3 +39,8 @@ variable "spot_instance_count" {
   description = "Specifies the number of spot instances to create."
   default     = "0"
 }
+
+variable "ssh_private_key" {
+  description = "the ssh private key for provisioner"
+  default     = ""
+}
