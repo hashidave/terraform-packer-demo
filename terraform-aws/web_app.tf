@@ -16,7 +16,7 @@ data "hcp_packer_image" "ubuntu_us_east_2" {
 resource "aws_instance" "hashicat" {
   ami                         = data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
   instance_type               = var.instance_type
-  key_name                    = aws_key_pair.hashicat.key_name
+  key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.hashicat.id
   vpc_security_group_ids      = [aws_security_group.hashicat.id]
@@ -41,26 +41,26 @@ resource "aws_eip_association" "hashicat" {
   allocation_id = aws_eip.hashicat[count.index].id
 }
 
-resource "tls_private_key" "hashicat" {
-  algorithm = "RSA"
-}
+#resource "tls_private_key" "hashicat" {
+#  algorithm = "RSA"
+#}
 
-locals {
-  private_key_filename = "${var.prefix}-ssh-key.pem"
-  private_key_filename2 = "${var.prefix}-ssh-key2.pem"
-}
+#locals {
+#  private_key_filename = "${var.prefix}-ssh-key.pem"
+#  private_key_filename2 = "${var.prefix}-ssh-key2.pem"
+#}
 
-resource "aws_key_pair" "hashicat" {
-  key_name   = local.private_key_filename
-  public_key = tls_private_key.hashicat.public_key_openssh
-}
+#resource "aws_key_pair" "hashicat" {
+#  key_name   = local.private_key_filename
+#  public_key = tls_private_key.hashicat.public_key_openssh
+#}
 
 
 
 resource "aws_instance" "hashicat2" {
   ami                         = data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
   instance_type               = var.instance_type
-  key_name                    = aws_key_pair.hashicat2.key_name
+  key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.hashicat.id
   vpc_security_group_ids      = [aws_security_group.hashicat.id]
@@ -76,7 +76,7 @@ resource "aws_instance" "hashicat2" {
     user     = "ubuntu"
     host     = self.public_ip 
     port     = 22
-    private_key = tls_private_key.hashicat2.private_key_openssh
+    private_key = var.ssh_private_key
   }
 
   provisioner "remote-exec" {
@@ -98,19 +98,19 @@ resource "aws_eip_association" "hashicat2" {
   allocation_id = aws_eip.hashicat2[count.index].id
 }
 
-resource "tls_private_key" "hashicat2" {
-  algorithm = "RSA"
-}
+#resource "tls_private_key" "hashicat2" {
+#  algorithm = "RSA"
+#}
 
-resource "aws_key_pair" "hashicat2" {
-  key_name   = local.private_key_filename2
-  public_key = tls_private_key.hashicat2.public_key_openssh
-}
+#resource "aws_key_pair" "hashicat2" {
+#  key_name   = local.private_key_filename2
+#  public_key = tls_private_key.hashicat2.public_key_openssh
+#}
 
 resource "aws_spot_instance_request" "hashicat_spot" {
   ami                         = data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
   instance_type               = var.instance_type
-  key_name                    = aws_key_pair.hashicat2.key_name
+  key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.hashicat.id
   vpc_security_group_ids      = [aws_security_group.hashicat.id]
@@ -130,7 +130,7 @@ resource "aws_spot_instance_request" "hashicat_spot" {
     user     = "ubuntu"
     host     = self.public_ip 
     port     = 22
-    private_key = tls_private_key.hashicat2.private_key_openssh
+    private_key = var.ssh_private_key
   }
 
   provisioner "remote-exec" {
