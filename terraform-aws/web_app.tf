@@ -69,8 +69,8 @@ resource "aws_instance" "hashicat2" {
     Name = "${var.prefix}-HashiCat-Web-App2"
   }
   
-  #count=var.server_count
-  count=0
+  count=var.server2_count
+  
 
   connection {
     type     = "ssh"
