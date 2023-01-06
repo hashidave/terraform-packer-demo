@@ -32,8 +32,15 @@ variable "instance_type" {
 
 variable "server_count" {
   description = "Specifies the number of instances to create."
-  default     = "2"
+  default     = "1"
 }
+
+
+variable "server2_count" {
+  description = "Specifies the number of instances of hashicat2 to create."
+  default     = "0"
+}
+
 
 variable "spot_instance_count" {
   description = "Specifies the number of spot instances to create."
