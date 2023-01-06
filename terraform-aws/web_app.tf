@@ -88,13 +88,13 @@ resource "aws_instance" "hashicat2" {
 }
 
 resource "aws_eip" "hashicat2" {
-  count=var.server_count
+  count=var.server2_count
   instance = aws_instance.hashicat2[count.index].id
   vpc      = true
 }
 
 resource "aws_eip_association" "hashicat2" {
-  count=var.server_count
+  count=var.server2_count
   instance_id   = aws_instance.hashicat2[count.index].id
   allocation_id = aws_eip.hashicat2[count.index].id
 }
