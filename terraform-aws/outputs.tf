@@ -10,10 +10,10 @@ output "catapp_url" {
   value = aws_eip.hashicat.*.public_dns
 }
 
-#output "private_key"{
-#  value=tls_private_key.hashicat.private_key_openssh   
-#  sensitive=true
-#}
+output "private_key"{
+  value=var.ssh_private_key
+  sensitive=true
+}
 
 
 output "catapp_ip" {
