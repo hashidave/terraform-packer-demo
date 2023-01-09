@@ -25,7 +25,8 @@ resource "aws_instance" "hashicat" {
     Type="web-server", 
     Meal="lunch", 
     Character="Butters", 
-    Name = "${var.prefix}-HashiCat-Web-App"
+    Name = "${var.prefix}-HashiCat-Web-App",
+    host-set="DMR_BOUNDARY_DEMO"
   }
 }
 
@@ -56,16 +57,16 @@ resource "aws_eip_association" "hashicat" {
 #}
 
 
-
+# NOT USING THIS.  USING DYNAMIC HOST SET
 # Add to the boundary host catalog for demos
-resource "boundary_host_static" "test_host" {
-  count 	  = var.server_count
-  type            = "static"
-  name            = "hashicat_test-${count.index}"
-  description     = "My first host!"
-  address         = aws_eip.hashicat[count.index].public_ip
-  host_catalog_id = var.boundary_catalog_id
-}
+#resource "boundary_host_static" "test_host" {
+#  count 	  = var.server_count
+#  type            = "static"
+#  name            = "hashicat_test-${count.index}"
+#  description     = "My first host!"
+#  address         = aws_eip.hashicat[count.index].public_ip
+#  host_catalog_id = var.boundary_catalog_id
+#}
 
 
 
