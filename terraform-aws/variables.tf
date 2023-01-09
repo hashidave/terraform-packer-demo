@@ -57,9 +57,9 @@ variable "boundary_catalog_id" {
   default     = ""
 }
 
-variable "TF_VAR_TF_WORKSPACE_PWD" {
-  description = "boundary user password"
-  default     = ""
-}
+# variable "TF_VAR_TF_WORKSPACE_PWD" {
+#  description = "boundary user password"
+#  default     = ""
+#}
 
 
