@@ -61,7 +61,7 @@ resource "aws_eip_association" "hashicat" {
 resource "boundary_host_static" "test_host" {
   count 	  = var.server_count
   type            = "static"
-  name            = "hashicat_test-$(count.index)"
+  name            = "hashicat_test-${count.index}"
   description     = "My first host!"
   address         = aws_eip.hashicat[count.index].public_ip
   host_catalog_id = var.boundary_catalog_id
