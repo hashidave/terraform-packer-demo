@@ -58,7 +58,14 @@ resource "aws_eip_association" "hashicat" {
 
 
 # Add to the boundary host catalog for demos
-
+resource "boundary_host" "test_host" {
+  count 	  = var.server_count
+  type            = "static"
+  name            = "hashicat_test"
+  description     = "My first host!"
+  address         = aws_eip.hashicat[count.index].public_ip
+  host_catalog_id = var.boundary_catalog_id
+}
 
 
 

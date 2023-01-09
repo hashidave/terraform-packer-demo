@@ -52,4 +52,9 @@ variable "ssh_private_key" {
   default     = ""
 }
 
+variable "boundary_catalog_id" {
+  description = "the catalog we put the hosts into"
+  default     = ""
+}
+
 
