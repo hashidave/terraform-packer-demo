@@ -15,7 +15,7 @@ terraform {
     hostname     = "app.terraform.io"
 
     workspaces {
-      name = "Packer-TF-Demo"
+      name = "GoldenImage-AWS-dev"
     }
   }
 }

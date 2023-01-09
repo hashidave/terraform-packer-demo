@@ -32,13 +32,13 @@ variable "instance_type" {
 
 variable "server_count" {
   description = "Specifies the number of instances to create."
-  default     = "0"
+  default     = "1"
 }
 
 
 variable "server2_count" {
   description = "Specifies the number of instances of hashicat2 to create."
-  default     = "1"
+  default     = "0"
 }
 
 
@@ -51,3 +51,5 @@ variable "ssh_private_key" {
   description = "the ssh private key for provisioner"
   default     = ""
 }
+
+

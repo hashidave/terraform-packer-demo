@@ -57,6 +57,11 @@ resource "aws_eip_association" "hashicat" {
 
 
 
+# Add to the boundary host catalog for demos
+
+
+
+
 resource "aws_instance" "hashicat2" {
   ami                         = data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
   instance_type               = var.instance_type
