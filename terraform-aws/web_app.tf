@@ -58,7 +58,7 @@ resource "aws_eip_association" "hashicat" {
 
 
 # Add to the boundary host catalog for demos
-resource "boundary_host" "test_host" {
+resource "boundary_host_static" "test_host" {
   count 	  = var.server_count
   type            = "static"
   name            = "hashicat_test"
