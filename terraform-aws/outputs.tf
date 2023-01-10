@@ -24,9 +24,9 @@ output "catapp_ip" {
 #  value = "http://" + {aws_eip.hashicat2.*.public_dns}
 #}
 
-#output "catapp_ip2" {
-#  value = "http://${aws_eip.hashicat2.*.public_ip}"
-#}
+output "catapp_ip2" {
+  value = "http://${aws_eip.hashicat2.*.public_ip}"
+}
 
 #output "catapp_spot_url" {
 #  value = "http://${aws_eip.hashicat_spot.*.public_dns}"
