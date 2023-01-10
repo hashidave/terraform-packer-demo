@@ -25,7 +25,7 @@ output "catapp_ip" {
 #}
 
 output "catapp_ip2" {
-  value = "http://${aws_eip.hashicat2.*.public_ip}"
+  value = aws_eip.hashicat2.*.public_ip
 }
 
 #output "catapp_spot_url" {
