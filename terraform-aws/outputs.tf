@@ -40,5 +40,6 @@ output "catapp_ip2" {
 
 
 output "test"{
-  value="cidr:{aws_eip.hashicat.*.public_ip}/32"
+  value=formatlist("cidr:%s/32", aws_eip.hashicat.*.public_ip)
 }
+
