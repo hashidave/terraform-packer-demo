@@ -32,7 +32,7 @@ variable "instance_type" {
 
 variable "server_count" {
   description = "Specifies the number of instances to create."
-  default     = "2"
+  default     = "1"
 }
 
 
