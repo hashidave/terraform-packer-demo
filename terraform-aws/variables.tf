@@ -27,18 +27,18 @@ variable "subnet_prefix" {
 
 variable "instance_type" {
   description = "Specifies the AWS instance type."
-  default     = "t2.micro"
+  default     = "t2.nano"
 }
 
 variable "server_count" {
   description = "Specifies the number of instances to create."
-  default     = "0"
+  default     = "2"
 }
 
 
 variable "server2_count" {
   description = "Specifies the number of instances of hashicat2 to create."
-  default     = "1"
+  default     = "0"
 }
 
 
