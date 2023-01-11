@@ -26,7 +26,7 @@ resource "aws_instance" "hashicat" {
     Meal="lunch", 
     Character="Butters", 
     Name = "${var.prefix}-HashiCat-Web-App",
-    host-set="DMR_BOUNDARY_DEMO"
+    host-set= "DMR_GOLDEN_IMAGE_AWS_DEV"
   }
 }
 
