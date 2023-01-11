@@ -35,3 +35,10 @@ output "catapp_ip2" {
 #output "catapp_spot_ip" {
 #  value = "http://${aws_eip.hashicat_spot.*.public_ip}"
 #}
+
+
+
+
+output "test"{
+  value="cidr:{aws_eip.hashicat.*.public_ip}/32"
+}

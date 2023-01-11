@@ -26,11 +26,11 @@ data "tfe_outputs" "Boundary" {
 
 resource "boundary_host_set_plugin" "host_set" {
   name            = "GoldenImage AWS Dev Host Set"
-  host_catalog_id = tfe_outputs.Boundary.host_catalog
+  host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
   attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_DEV" })
 
   # Have to set the endpoints to whatever IP Addresses that AWS asssigns
-  preferred_endpoints=["cidr:{aws_eip.hashicat.*.public_ip}/32"]
+#  preferred_endpoints=["cidr:{aws_eip.hashicat.*.public_ip}/32"]
 
 }
 
