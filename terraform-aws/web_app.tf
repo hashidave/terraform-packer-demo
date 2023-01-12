@@ -10,7 +10,7 @@ data "hcp_packer_image" "ubuntu_us_east_2" {
   bucket_name    = "acme-webapp"
   cloud_provider = "aws"
   iteration_id   = data.hcp_packer_iteration.ubuntu.ulid
-  region         = "us-east-2"
+  region         = var.region
 }
 
 resource "aws_instance" "hashicat" {
@@ -57,7 +57,7 @@ resource "aws_eip_association" "hashicat" {
 #}
 
 
-# NOT USING THIS.  USING DYNAMIC HOST SET
+# NOT USING THIS.  ddUSING DYNAMIC HOST SET
 # Add to the boundary host catalog for demos
 #resource "boundary_host_static" "test_host" {
 #  count 	  = var.server_count

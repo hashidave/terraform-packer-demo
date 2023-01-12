@@ -84,7 +84,7 @@ This is the base Ubuntu image + Our "Platform" (apache2)
     inline = [
       "sudo apt -y update",
       "sleep 15",
-      "sudo apt -y update",
+      "sudo apt -y install gpg",
       "sudo apt -y install apache2",
       "sudo systemctl enable apache2",
       "sudo systemctl start apache2",

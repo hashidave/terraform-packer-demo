@@ -5,25 +5,6 @@ data "tfe_outputs" "Boundary" {
 }
 
 
-#resource "boundary_host_catalog_plugin" "host_catalogd" {
-#  name            = "GoldenImage AWS Dev Catalog"
-#  description     = ""
-#  scope_id        = tfe_outputs.Boundary.host_catalog
-#  plugin_name     = "aws"
-#  attributes_json = jsonencode({ 
-#	"region" = "us-east-2"
-#	"disable_credential_rotation"=true
-# 
-#  })
- 
-#  # recommended to pass in aws secrets using a file() or using environment variables
-  # the secrets below must be generated in aws by creating a aws iam user with programmatic access
-#  secrets_json = jsonencode({
-#    "access_key_id"     = var.AWS_ACCESS_KEY_BOUNDARY_USER
-#    "secret_access_key" = var.AWS_SECRET_KEY_BOUNDARY_USER
-#  })
-#}
-
 resource "boundary_host_set_plugin" "host_set" {
   name            = "GoldenImage AWS Dev Host Set"
   host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
@@ -35,7 +16,65 @@ resource "boundary_host_set_plugin" "host_set" {
 }
 
 
+# Deploy a boundary worker into our environment
+  data "hcp_packer_iteration" "boundary-worker" {
+    bucket_name = "boundary-workers"
+    channel     = "production"
+  } 
+ 
+  data "hcp_packer_image" "boundary-worker" {
+    bucket_name    = "boundary-workers"
+    cloud_provider = "aws"
+    iteration_id   = data.hcp_packer_iteration.boundary-worker.ulid
+    region         = var.region
+  }
+ 
+  resource "aws_instance" "boundary-worker" {
+    ami                         = data.hcp_packer_image.boundary-worker.cloud_image_id
+    instance_type               = var.instance_type
+    key_name                    = "DaveTestKey-Ohio"
+    associate_public_ip_address = true
+    subnet_id                   = aws_subnet.hashicat.id
+    vpc_security_group_ids      = [aws_security_group.boundary-worker.id]
+   
+    tags = {
+      Type="Boundary_Worker",
+      Name = "${var.prefix}-BoundaryWorker",
+    }
+  }
 
 
+resource "aws_eip" "boundary-worker" {
+  instance = aws_instance.boundary-worker.id
+  vpc      = true
+}
+
+resource "aws_eip_association" "boundary-worker" {
+  instance_id   = aws_instance.boundary-worker.id
+  allocation_id = aws_eip.boundary-worker.id
+}
+
+
+
+resource "aws_security_group" "boundary-worker" {
+  name = "${var.prefix}-security-group"
+
+  vpc_id = aws_vpc.hashicat.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 9202
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+    prefix_list_ids = []
+  }
+}
 
 
