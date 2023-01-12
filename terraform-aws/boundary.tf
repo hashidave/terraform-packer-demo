@@ -19,7 +19,7 @@ resource "boundary_host_set_plugin" "host_set" {
 resource "boundary_worker" "private-worker"{
   scope_id    = var.BoundaryProject
   description = "Golden Image Workflow Worker"
-  name        = "GoldenImageWorker"
+  name        = "goldenimageworker"
 }
 
 
@@ -84,7 +84,7 @@ resource "aws_eip_association" "boundary-worker" {
 
 
 resource "aws_security_group" "boundary-worker" {
-  name = "${var.prefix}-security-group"
+  name = "boundary-worker-security-group"
 
   vpc_id = aws_vpc.hashicat.id
 
