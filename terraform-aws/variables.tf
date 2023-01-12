@@ -52,9 +52,9 @@ variable "ssh_private_key" {
   default     = ""
 }
 
-variable "boundary_catalog_id" {
-  description = "the catalog we put the hosts into"
-  default     = ""
+variable "BoundaryProject"{
+  description = "The Scope ID for the SE Demos Project"
+  default     = "o_cDR15maeYo"
 }
 
 variable "TF_WORKSPACE_PWD" {

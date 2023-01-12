@@ -15,6 +15,13 @@ resource "boundary_host_set_plugin" "host_set" {
 
 }
 
+# Create a controller-lead HCP Boundary Worker Object
+resource "boundary_worker" "private-worker"{
+  scope_id    = var.BoundaryProject
+  description = "Golden Image Workflow Worker"
+  name        = "GoldenImageWorker"
+}
+
 
 # Deploy a boundary worker into our environment
   data "hcp_packer_iteration" "boundary-worker" {
@@ -41,6 +48,26 @@ resource "boundary_host_set_plugin" "host_set" {
       Type="Boundary_Worker",
       Name = "${var.prefix}-BoundaryWorker",
     }
+
+    connection {
+       type     = "ssh"
+       user     = "ubuntu"
+       host     = self.public_ip
+       port     = 22
+       private_key = var.ssh_private_key
+     }
+
+
+     #Provisioner will fill out the stub config file with some important 
+     #Boundary info & restart the boundary-worker service
+     provisioner "remote-exec" {
+       inline=[
+         "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/pki-worker.hcl"
+       ]
+     }
+
+
+
   }
 
 
