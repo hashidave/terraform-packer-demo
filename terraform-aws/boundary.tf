@@ -20,6 +20,15 @@ resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
   description = "Golden Image Workflow Worker"
   name        = "goldenimageworker"
+
+  # The activation token on the HCP side is only good for one run so if we
+  # change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
+#  lifecycle{
+#     # ARRRRG this creates a circlar dependency!!
+#     replace_triggered_by=[aws_instance.boundary-worker]
+#  }
+
+
 }
 
 
@@ -68,9 +77,6 @@ resource "boundary_worker" "private-worker"{
          "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${boundary_worker.private-worker.address}/g'' /etc/boundary.d/pki-worker.hcl"
        ]
      }
-
-
-
   }
 
 
