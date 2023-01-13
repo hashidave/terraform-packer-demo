@@ -66,7 +66,8 @@ resource "boundary_worker" "private-worker"{
   # that we have to put into the config file.
   resource "null_resource" "worker-provisioner" {
     triggers={
-      worker-id=aws_instance.boundary-worker.id
+      worker-id=aws_instance.boundary-worker.id,
+      worker-ip=aws_eip.boundary-worker.public_ip
     }
        
 
