@@ -11,7 +11,7 @@ resource "boundary_host_set_plugin" "host_set" {
   attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_DEV" })
 
   # Have to set the endpoints to whatever IP Addresses that AWS asssigns
-  preferred_endpoints=[var.subnet_prefix]
+  preferred_endpoints=["cidr:${var.subnet_prefix}"]
 
 }
 
