@@ -10,11 +10,19 @@ output "catapp_url" {
   value = aws_eip.hashicat.*.public_dns
 }
 
-output "ssh_private_key"{
-  value=var.ssh_private_key
-  sensitive=true
+output "controller_token" { 
+  value =boundary_worker.private-worker.controller_generated_activation_token
 }
 
+#output "ssh_private_key"{
+#  value=var.ssh_private_key
+#  sensitive=true
+#}
+
+
+output "boundary_worker_ip" {
+  value = aws_eip.boundary-worker.public_ip
+}
 
 output "catapp_ip" {
   value = aws_eip.hashicat.*.public_ip
@@ -39,7 +47,7 @@ output "catapp_ip2" {
 
 
 
-output "test"{
-  value=formatlist("cidr:%s/32", aws_eip.hashicat.*.public_ip)
-}
+#output "test"{
+#  value=formatlist("cidr:%s/32", aws_eip.hashicat.*.public_ip)
+#}
 
