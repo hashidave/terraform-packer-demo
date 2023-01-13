@@ -54,7 +54,7 @@ variable "ssh_private_key" {
 
 variable "BoundaryProject"{
   description = "The Scope ID for the SE Demos Project"
-  default     = "o_cDR15maeYo"
+  default     = "global"
 }
 
 variable "TF_WORKSPACE_PWD" {
