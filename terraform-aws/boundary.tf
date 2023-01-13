@@ -58,10 +58,21 @@ resource "boundary_worker" "private-worker"{
       Name = "${var.prefix}-BoundaryWorker",
     }
 
+  }
+
+
+
+  # This exist only to get around the circular dependency between the worker & the aws_eip
+  # that we have to put into the config file.
+  resource "null-resource" "worker-provisioner" {
+
+    depends_on=[aws_instance.boundary-worker]
+       
+
     connection {
        type     = "ssh"
        user     = "ubuntu"
-       host     = self.public_ip
+       host     = aws_eip.boundary-worker.public-ip
        port     = 22
        private_key = var.ssh_private_key
      }
@@ -74,10 +85,10 @@ resource "boundary_worker" "private-worker"{
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/pki-worker.hcl",
 	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/pki-worker.hcl",
-         "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${boundary_worker.private-worker.address}/g'' /etc/boundary.d/pki-worker.hcl"
+         "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${aws_eip.boundary-worker.public-ip}/g'' /etc/boundary.d/pki-worker.hcl"
        ]
      }
-  }
+ }
 
 
 resource "aws_eip" "boundary-worker" {
