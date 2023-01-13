@@ -17,7 +17,7 @@ resource "boundary_host_set_plugin" "host_set" {
 
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
-  scope_id    = var.BoundaryProject
+  scope_id    = "global" 
   description = "Golden Image Workflow Worker"
   name        = "goldenimageworker"
 }
@@ -62,7 +62,10 @@ resource "boundary_worker" "private-worker"{
      #Boundary info & restart the boundary-worker service
      provisioner "remote-exec" {
        inline=[
+         "sudo sed -i ''s/CLUSTER_ID_HERE/${boundary-cluster-id}/g'' /etc/boundary.d/pki-worker.hcl"
+	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/pki-worker.hcl"
+         "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${boundary_worker.private-worker.address}/g'' /etc/boundary.d/pki-worker.hcl"
        ]
      }
 

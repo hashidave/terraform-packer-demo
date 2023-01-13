@@ -52,10 +52,15 @@ variable "ssh_private_key" {
   default     = ""
 }
 
-variable "BoundaryProject"{
-  description = "The Scope ID for the SE Demos Project"
-  default     = "global"
+variable "boundary-address"{
+  default= "https://868bdfc7-61c6-4f31-b3a0-7bae78941aa0.boundary.hashicorp.cloud"
 }
+
+
+variable "boundary-cluster-id"{
+  default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
+}
+
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"

@@ -34,10 +34,11 @@ listener "tcp" {
 }
 
 worker {
-  public_addr = "<worker_public_addr>"
+  public_addr = "WORKER_PUBLIC_IP_HERE"
   auth_storage_path = "/home/ubuntu/boundary/worker1"
   tags {
-    type = ["worker", "dev"]
+    type = ["worker=dev", "env=GoldenImageDev"]
+    
   }
   
   controller_generated_activation_token="CONTROLLER_GENERATED_TOKEN_HERE"
