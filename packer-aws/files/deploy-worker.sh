@@ -37,7 +37,7 @@ worker {
   public_addr = "WORKER_PUBLIC_IP_HERE"
   auth_storage_path = "/home/ubuntu/boundary/worker1"
   tags {
-    type = ["worker=dev", "env=GoldenImageDev"]
+    type = ["worker=dev", "env=goldenimagedev"]
     
   }
   
@@ -46,7 +46,7 @@ worker {
 }
 EOF
 
-sudo mv ~/pki-worker.hcl /etc/boundary.d
+sudo mv ~/pki-worker.hcl /etc/boundary.d/boundary.hcl
 
 
 #Terraform provisioner will replace the cluster_id and controller_generated_token bits at deployment
