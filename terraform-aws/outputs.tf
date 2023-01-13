@@ -20,9 +20,16 @@ output "controller_token" {
 #}
 
 
-output "boundary_worker_ip" {
+output "boundary_worker_ec2_ip" {
   value = aws_eip.boundary-worker.public_ip
 }
+
+output "hcp_boundary_worker_ip" {
+  value = boundary_worker.private-worker.address
+}
+
+
+
 
 output "catapp_ip" {
   value = aws_eip.hashicat.*.public_ip
