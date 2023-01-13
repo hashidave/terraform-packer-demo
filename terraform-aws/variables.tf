@@ -38,7 +38,7 @@ variable "server_count" {
 
 variable "server2_count" {
   description = "Specifies the number of instances of hashicat2 to create."
-  default     = "0"
+  default     = "2"
 }
 
 
