@@ -65,8 +65,9 @@ resource "boundary_worker" "private-worker"{
   # This exist only to get around the circular dependency between the worker & the aws_eip
   # that we have to put into the config file.
   resource "null_resource" "worker-provisioner" {
-
-    depends_on=[aws_instance.boundary-worker]
+    triggers={
+      worker-id=aws_instance.boundary-worker.id
+    }
        
 
     connection {
