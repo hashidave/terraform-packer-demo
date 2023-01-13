@@ -74,7 +74,7 @@ resource "boundary_worker" "private-worker"{
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/pki-worker.hcl",
 	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/pki-worker.hcl",
-         "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${boundary_worker.private-worker.address}/g'' /etc/boundary.d/pki-worker.hcl"
+         "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${aws_eip.boundary-worker.public_ip}/g'' /etc/boundary.d/pki-worker.hcl"
        ]
      }
   }
