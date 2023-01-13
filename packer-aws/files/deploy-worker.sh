@@ -35,7 +35,7 @@ listener "tcp" {
 
 worker {
   public_addr = "WORKER_PUBLIC_IP_HERE"
-  auth_storage_path = "/home/ubuntu/boundary/worker1"
+  auth_storage_path = "/opt/boundary/worker1"
   tags {
     type = ["worker=dev", "env=goldenimagedev"]
     
