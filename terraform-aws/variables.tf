@@ -82,7 +82,7 @@ variable "TF_WORKSPACE_PWD" {
  default     = ""
 }
 
-variable "ubuntu-password" {
+variable "ubuntu_password" {
   default = ""
 }
 

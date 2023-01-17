@@ -26,7 +26,7 @@ resource "boundary_credential_username_password" "example" {
   description         = "THIS IS NOT SECURE"
   credential_store_id = boundary_credential_store_static.demo-creds.id
   username            = "dave"
-  password            = var.ubuntu-password 
+  password            = var.ubuntu_password 
 }
 
 resource "boundary_target" "server-ssh" {

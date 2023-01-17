@@ -28,19 +28,7 @@ resource "aws_instance" "hashicat" {
     Name = "${var.prefix}-HashiCat-Web-App",
     host-set= "DMR_GOLDEN_IMAGE_AWS_DEV"
   }
-  connection {
-    type     = "ssh"
-    user     = "ubuntu"
-    host     = self.public_ip 
-    port     = 22
-    private_key = var.ssh_private_key
-  }
 
-  provisioner "remote-exec" {
-    inline=[
-      "sudo useradd dave -p ${var.ubuntu-password}"
-    ]
-  }
 }
 
 resource "aws_eip" "hashicat" {
