@@ -3,6 +3,8 @@
 # The web app has a customizable image and some text.
 
 # Set up apache first.
+sudo apt-get update && sudo apt-get dist-upgrade
+
 sudo apt -y -f install apache2
 sudo systemctl enable apache2
 sudo systemctl start apache2
