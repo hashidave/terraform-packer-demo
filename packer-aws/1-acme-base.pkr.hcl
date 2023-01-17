@@ -50,6 +50,11 @@ source "amazon-ebs" "acme-base" {
   ami_name       = "packer_aws_{{timestamp}}_${var.image_name}_v${var.version}"
 }
 
+# Vault Connection so we can get some secrets
+local "UbuntuPassword"{
+  expression =  vault ("kv/data/GoldenImageDev", "pasword")
+  sensitive = true
+}
 
 
 #--------------------------------------------------
@@ -84,11 +89,12 @@ This is the base Ubuntu image + Our "Platform" (apache2)
     inline = [
       "sudo apt -y update",
       "sleep 15",
-      "sudo apt -y install gpg",
-      "sudo apt -y install apache2",
-      "sudo systemctl enable apache2",
-      "sudo systemctl start apache2",
-      "sudo chown -R ubuntu:ubuntu /var/www/html",
+      #"sudo apt -y -f install gpg",
+      #"sudo apt -y -f install apache2",
+      #"sudo systemctl enable apache2",
+      #"sudo systemctl start apache2",
+      #"sudo chown -R ubuntu:ubuntu /var/www/html",
+      "sudo useradd dave -p ${local.UbuntuPassword}",
     ]
 
   }
