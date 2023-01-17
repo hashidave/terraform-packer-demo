@@ -38,9 +38,9 @@ resource "boundary_target" "server-ssh" {
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
   ]
-  brokered_credential_source_ids = [
-    boundary_credential_store_static.demo-creds.id
-  ]
+  #brokered_credential_source_ids = [
+  #  boundary_credential_store_static.demo-creds.id
+  #]
 }
 
 
