@@ -20,7 +20,7 @@ resource "boundary_host_set_plugin" "host_set" {
 resource "boundary_credential_store_vault" "vault-store" {
   name        = "vault-store"
   description = "Demo connection to my HCP Vault"
-  address     = var.vault-token  
+  address     = var.vault-cluster
   token       = var.vault-token 
   scope_id    = var.boundary-project
 }
