@@ -7,6 +7,8 @@ data "tfe_outputs" "Boundary" {
 
 resource "boundary_host_set_plugin" "host_set" {
   name            = "GoldenImage AWS Dev Host Set"
+ 
+  # The host catalog comes from an external state for our general boundary environment
   host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
   attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_DEV" })
 
@@ -15,19 +17,23 @@ resource "boundary_host_set_plugin" "host_set" {
 
 }
 
-resource "boundary_credential_store_static" "demo-creds" {
-  name        = "demo_creds"
-  description = "Creds for our test project"
+resource "boundary_credential_store_vault" "vault-store" {
+  name        = "vault-store"
+  description = "Demo connection to my HCP Vault"
+  address     = var.vault-token  
+  token       = var.vault-token 
   scope_id    = var.boundary-project
 }
 
-resource "boundary_credential_username_password" "example" {
-  name                = "example_username_password"
-  description         = "THIS IS NOT SECURE"
-  credential_store_id = boundary_credential_store_static.demo-creds.id
-  username            = "dave"
-  password            = var.ubuntu_password 
+resource "boundary_credential_library_vault" "vault-library" {
+  name                = "hcp-vault-library"
+  description         = "HCP Vault credential library"
+  credential_store_id = boundary_credential_store_vault.vault-store.id
+  credential_type     = "username_password"
+  path                = "kv/data/GoldenImageDev/pasword" # change to Vault backend path
+  http_method         = "GET"
 }
+
 
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
@@ -38,9 +44,9 @@ resource "boundary_target" "server-ssh" {
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
   ]
-  #brokered_credential_source_ids = [
-  #  boundary_credential_store_static.demo-creds.id
-  #]
+  brokered_credential_source_ids = [
+  
+  ]
 }
 
 

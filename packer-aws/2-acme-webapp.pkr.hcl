@@ -27,7 +27,7 @@ variable "version" {
 }
 
 variable "hcp_channel_base" {
-  default = "production"
+  default = "Dev"
 }
 
 variable "hcp_channel_webapp" {
@@ -114,8 +114,8 @@ This is the Acme Base + Our "Application" (html)
     destination = "/home/ubuntu/deploy-app2.sh"
   }
   
-  provisioner "shell" {
-    inline = ["bash /tmp/deploy-app.sh"]
-  }
+  #provisioner "shell" {
+  #  inline = ["bash /tmp/deploy-app.sh"]
+  #}
 
 }
