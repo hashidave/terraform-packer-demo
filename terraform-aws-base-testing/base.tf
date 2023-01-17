@@ -3,7 +3,7 @@
 #
 data "hcp_packer_iteration" "ubuntu" {
   bucket_name = "acme-base"
-  channel     = "dev"
+  channel     = "Dev"
 }
 
 data "hcp_packer_image" "ubuntu_us_east_2" {
