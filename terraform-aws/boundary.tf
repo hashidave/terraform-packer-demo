@@ -30,8 +30,8 @@ resource "boundary_credential_username_password" "example" {
 }
 
 resource "boundary_target" "server-ssh" {
-  name         = "foo"
-  description  = "Foo target"
+  name         = "server-ssh"
+  description  = "ssh target"
   type         = "tcp"
   default_port = "22"
   scope_id     = var.boundary-project
