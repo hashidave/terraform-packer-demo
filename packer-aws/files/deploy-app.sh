@@ -2,6 +2,13 @@
 # Script to deploy a very simple web application.
 # The web app has a customizable image and some text.
 
+# Set up apache first.
+sudo apt -y -f install apache2
+sudo systemctl enable apache2
+sudo systemctl start apache2
+sudo chown -R ubuntu:ubuntu /var/www/html
+
+
 echo "Creating /var/www/html/index.html"
 
 cat << EOM > /var/www/html/index.html
