@@ -23,6 +23,7 @@ resource "boundary_credential_store_vault" "vault-store" {
   address     = var.vault-cluster
   token       = var.vault-token 
   scope_id    = var.boundary-project
+  namespace   = "admin"
 }
 
 resource "boundary_credential_library_vault" "vault-library" {
