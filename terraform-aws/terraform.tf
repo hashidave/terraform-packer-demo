@@ -8,6 +8,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "4.2.0"
     }
+    vault = {
+      version = "~> 3.0.0"
+    }
   }
 
   cloud {
@@ -19,3 +22,6 @@ terraform {
     }
   }
 }
+
+
+

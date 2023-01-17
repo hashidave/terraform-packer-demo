@@ -10,6 +10,10 @@ variable "prefix" {
   default     = "hashicat-demo"
 }
 
+variable "vault-cluster"{
+  default = "https://hashiDaveR-vault-cluster-public-vault-f886c6aa.441332cd.z1.hashicorp.cloud:8200"
+}
+
 variable "region" {
   description = "The region where the resources are created."
   default     = "us-east-2"
@@ -61,10 +65,24 @@ variable "boundary-cluster-id"{
   default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
 }
 
+variable "boundary-project"{
+  default="p_t0BBolQK8o"
+}
+
+variable login_approle_role_id {
+  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
+} 
+
+variable VAULT_SECRET {
+  default="xxxx"
+}
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"
  default     = ""
 }
 
+variable "ubuntu-password" {
+  default = "r4cL92eENR6kjUP"
+}
 

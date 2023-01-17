@@ -15,6 +15,35 @@ resource "boundary_host_set_plugin" "host_set" {
 
 }
 
+resource "boundary_credential_store_static" "demo-creds" {
+  name        = "demo_creds"
+  description = "Creds for our test project"
+  scope_id    = var.boundary-project
+}
+
+resource "boundary_credential_username_password" "example" {
+  name                = "example_username_password"
+  description         = "THIS IS NOT SECURE"
+  credential_store_id = boundary_credential_store_static.demo-creds.id
+  username            = "dave"
+  password            = var.ubuntu-password 
+}
+
+resource "boundary_target" "server-ssh" {
+  name         = "foo"
+  description  = "Foo target"
+  type         = "tcp"
+  default_port = "22"
+  scope_id     = var.boundary-project
+  host_source_ids = [
+    boundary_host_set_plugin.host_set.id
+  ]
+  brokered_credential_source_ids = [
+    boundary_credential_store_static.demo-creds.id
+  ]
+}
+
+
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
@@ -30,6 +59,7 @@ resource "boundary_worker" "private-worker"{
 
 
 }
+
 
 
 # Deploy a boundary worker into our environment
