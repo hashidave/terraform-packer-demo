@@ -85,17 +85,37 @@ This is the base Ubuntu image + Our "Platform" (apache2)
     "source.amazon-ebs.acme-base"
   ]
 
+  provisioner "file" {
+    source      = "files/provision-base.sh"
+    destination = "/home/ubuntu/provision-base.sh"
+  }
+
+  # move the dave user public key
+  provisioner "file" {
+    source      = "files/authorized_keys"
+    destination = "/home/ubuntu/authorized_keys"
+  }
+
+
+
   provisioner "shell" {
-    inline = [
-      "sudo apt -y update",
-      "sleep 15",
-      #"sudo apt -y -f install gpg",
+    script= "files/provision-base.sh"
+    environment_vars= ["UBUNTU_PASSWORD=${local.UbuntuPassword}"]
+             
+  }
+
+
+#    inline = [
+#      "sudo apt -y update",
+#      "sleep 15",
+#      #"sudo apt -y -f install gpg",
       #"sudo apt -y -f install apache2",
       #"sudo systemctl enable apache2",
       #"sudo systemctl start apache2",
       #"sudo chown -R ubuntu:ubuntu /var/www/html",
-      "sudo useradd dave -p ${local.UbuntuPassword}",
-    ]
+#      "sudo adduser dave -p ${local.UbuntuPassword}",
+#      "su dave"
+#    ]
 
-  }
+#  }
 }
