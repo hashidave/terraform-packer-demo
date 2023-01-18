@@ -24,7 +24,6 @@ resource "boundary_credential_store_vault" "vault-store" {
   token       = var.vault-token 
   scope_id    = var.boundary-project
   namespace   = "admin"
-  worker-filter='"goldenimage" in "tags/project" and "dev" in "env"'
 }
 
 resource "boundary_credential_library_vault" "vault-library" {
@@ -46,10 +45,14 @@ resource "boundary_target" "server-ssh" {
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
   ]
-  injected_appliation_credential_source_ids = [
+  
+  injected_application_credential_source_ids = [
     boundary_credential_library_vault.vault-library.id
   
   ]
+  
+  worker_filter="\"goldenimage\" in \"tags/project\" and \"dev\" in \"env\""
+
 }
 
 
