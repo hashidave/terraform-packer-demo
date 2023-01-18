@@ -13,7 +13,7 @@ resource "boundary_host_set_plugin" "host_set" {
   attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_${var.environment}" })
 
   # Have to set the endpoints to whatever IP Addresses that AWS asssigns
-  preferred_endpoints=["cidr:${var.subnet_prefix}"]
+  #preferred_endpoints=["cidr:${var.subnet_prefix}"]
 
 }
 
@@ -24,6 +24,7 @@ resource "boundary_credential_store_vault" "vault-store" {
   token       = var.vault-token 
   scope_id    = var.boundary-project
   namespace   = "admin"
+  worker-filter='"goldenimage" in "tags/project" and "dev" in "env"'
 }
 
 resource "boundary_credential_library_vault" "vault-library" {
@@ -45,7 +46,8 @@ resource "boundary_target" "server-ssh" {
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
   ]
-  brokered_credential_source_ids = [
+  injected_appliation_credential_source_ids = [
+    boundary_credential_library_vault.vault-library.id
   
   ]
 }
