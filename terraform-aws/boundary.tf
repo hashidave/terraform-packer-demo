@@ -6,11 +6,11 @@ data "tfe_outputs" "Boundary" {
 
 
 resource "boundary_host_set_plugin" "host_set" {
-  name            = "GoldenImage AWS Dev Host Set"
+  name            = "GoldenImage AWS ${var.environment} Host Set"
  
   # The host catalog comes from an external state for our general boundary environment
   host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
-  attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_DEV" })
+  attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_${var.environment}" })
 
   # Have to set the endpoints to whatever IP Addresses that AWS asssigns
   preferred_endpoints=["cidr:${var.subnet_prefix}"]
@@ -30,8 +30,8 @@ resource "boundary_credential_library_vault" "vault-library" {
   name                = "hcp-vault-library"
   description         = "HCP Vault credential library"
   credential_store_id = boundary_credential_store_vault.vault-store.id
-  credential_type     = "username_password"
-  path                = "kv/data/GoldenImageDev/pasword" # change to Vault backend path
+  credential_type     = "ssh_private_key"
+  path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
 
@@ -60,11 +60,8 @@ resource "boundary_worker" "private-worker"{
   # The activation token on the HCP side is only good for one run so if we
   # change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
   lifecycle{
-     # ARRRRG this creates a circlar dependency!!
      replace_triggered_by=[aws_instance.boundary-worker]
   }
-
-
 }
 
 
@@ -72,7 +69,7 @@ resource "boundary_worker" "private-worker"{
 # Deploy a boundary worker into our environment
   data "hcp_packer_iteration" "boundary-worker" {
     bucket_name = "boundary-workers"
-    channel     = "production"
+    channel     = var.environment 
   } 
  
   data "hcp_packer_image" "boundary-worker" {
@@ -168,5 +165,6 @@ ingress {
     prefix_list_ids = []
   }
 }
+
 
 
