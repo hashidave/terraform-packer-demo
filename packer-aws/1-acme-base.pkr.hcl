@@ -22,8 +22,14 @@ variable "image_name" {
 }
 
 variable "version" {
-  default = "1.0.0"
+  default = "2.0.0"
 }
+
+#should be Dev or Production
+variable "environment"{
+  default="Dev"
+}
+
 
 #--------------------------------------------------
 # AWS Image Config and Definition
@@ -64,9 +70,8 @@ build {
 
   hcp_packer_registry {
     bucket_name = var.hcp_bucket_name
-    description = <<EOT
-This is the base Ubuntu image + Our "Platform" (apache2)
-    EOT
+    description = "Base Ubuntu Image for Dave's Factory" 
+    
     bucket_labels = {
       "owner"          = "platform-team"
       "os"             = "Ubuntu"
@@ -103,19 +108,4 @@ This is the base Ubuntu image + Our "Platform" (apache2)
     environment_vars= ["UBUNTU_PASSWORD=${local.UbuntuPassword}"]
              
   }
-
-
-#    inline = [
-#      "sudo apt -y update",
-#      "sleep 15",
-#      #"sudo apt -y -f install gpg",
-      #"sudo apt -y -f install apache2",
-      #"sudo systemctl enable apache2",
-      #"sudo systemctl start apache2",
-      #"sudo chown -R ubuntu:ubuntu /var/www/html",
-#      "sudo adduser dave -p ${local.UbuntuPassword}",
-#      "su dave"
-#    ]
-
-#  }
 }

@@ -22,17 +22,17 @@ variable "hcp_bucket_name" {
   default = "acme-webapp"
 }
 
+#should be Dev or Production
+# This determines what we use for our base app
+variable "environment"{
+  default="Dev"
+}
+
+
 variable "version" {
-  default = "1.0.2"
+  default = "2.0.2"
 }
 
-variable "hcp_channel_base" {
-  default = "Dev"
-}
-
-variable "hcp_channel_webapp" {
-  default = "production"
-}
 
 variable "hcp_bucket_name_base" {
   default = "acme-base"
@@ -46,7 +46,7 @@ variable "hcp_bucket_name_base" {
 # Returh the most recent Iteration (or build) of an image, given a Channel
 data "hcp-packer-iteration" "acme-base" {
   bucket_name = var.hcp_bucket_name_base
-  channel     = var.hcp_channel_base
+  channel     = var.environment
 }
 
 
@@ -82,9 +82,8 @@ build {
 
   hcp_packer_registry {
     bucket_name = var.hcp_bucket_name
-    description = <<EOT
-This is the Acme Base + Our "Application" (html)
-    EOT
+    description = "The HashiCat Web Server"
+ 
     bucket_labels = {
       "owner"          = "application-team"
       "os"             = "Ubuntu"

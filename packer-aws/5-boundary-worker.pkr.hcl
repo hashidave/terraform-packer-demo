@@ -26,13 +26,12 @@ variable "version" {
   default = "1.0"
 }
 
-variable "hcp_channel_base" {
-  default = "production"
+# Should be Dev or Production. 
+# Used to select which base image we use
+variable "environment" {
+  default = "Production"
 }
 
-variable "hcp_channel_webapp" {
-  default = "production"
-}
 
 variable "hcp_bucket_name_base" {
   default = "acme-base"
@@ -46,7 +45,7 @@ variable "hcp_bucket_name_base" {
 # Returh the most recent Iteration (or build) of an image, given a Channel
 data "hcp-packer-iteration" "acme-base" {
   bucket_name = var.hcp_bucket_name_base
-  channel     = var.hcp_channel_base
+  channel     = var.environment
 }
 
 
@@ -82,9 +81,7 @@ build {
 
   hcp_packer_registry {
     bucket_name = var.hcp_bucket_name
-    description = <<EOT
-This is the Acme Base + a Boundary Worker 
-    EOT
+    description = "Boundary Worker Image. Contains HCP Boundary Worker package"
     bucket_labels = {
       "owner"          = "application-team"
       "os"             = "Ubuntu"
