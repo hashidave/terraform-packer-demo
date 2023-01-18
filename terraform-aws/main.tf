@@ -9,7 +9,7 @@ provider "aws" {
     tags = {
       Owner = "Dave"
       Demo       = "GoldenImage"
-      Dev = "True"
+      Environment = var.environment      
       Rep = "Tim"
     }
   }  
