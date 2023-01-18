@@ -39,7 +39,7 @@ resource "boundary_credential_library_vault" "vault-library" {
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
   description  = "ssh target"
-  type         = "tcp"
+  type         = "ssh"
   default_port = "22"
   scope_id     = var.boundary-project
   host_source_ids = [
