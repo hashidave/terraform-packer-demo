@@ -51,7 +51,7 @@ resource "boundary_target" "server-ssh" {
   
   ]
   
-  worker_filter="\"goldenimage\" in \"tags/project\" and \"dev\" in \"tags/env\""
+  worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"i/tags/env\""
 
 }
 
