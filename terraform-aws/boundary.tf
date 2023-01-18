@@ -33,10 +33,10 @@ resource "boundary_credential_library_vault" "vault-library" {
   credential_type     = "ssh_private_key"
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
-  credential_mapping_overrides = {
-    private_key_attribute            = "data.private_key"
-    username_attribute               = "data.username"
-  }
+#  credential_mapping_overrides = {
+#    private_key_attribute            = data.private_key
+#    username_attribute               = data.username
+#  }
 }
 
 
@@ -56,7 +56,7 @@ resource "boundary_target" "server-ssh" {
   ]
   
   worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
-
+#
 }
 
 
