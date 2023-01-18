@@ -18,7 +18,7 @@ terraform {
     hostname     = "app.terraform.io"
 
     workspaces {
-      name = "GoldenImage-AWS-dev"
+      tags = ["goldenimage-aws"]
     }
   }
 }
