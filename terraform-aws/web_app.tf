@@ -3,7 +3,7 @@
 #
 data "hcp_packer_iteration" "ubuntu" {
   bucket_name = "acme-webapp"
-  channel     = "production"
+  channel     = var.environment 
 }
 
 data "hcp_packer_image" "ubuntu_us_east_2" {
@@ -26,7 +26,7 @@ resource "aws_instance" "hashicat" {
     Meal="lunch", 
     Character="Butters", 
     Name = "${var.prefix}-HashiCat-Web-App",
-    host-set= "DMR_GOLDEN_IMAGE_AWS_DEV"
+    host-set= "DMR_GOLDEN_IMAGE_AWS_${var.environment}"
   }
 
 }
@@ -136,6 +136,7 @@ resource "aws_spot_instance_request" "hashicat_spot" {
 
   tags = {
     Name = "${var.prefix}-HashiCat-Web-App_Spot"
+    Env = var.environment
   }
   
   count=var.spot_instance_count
