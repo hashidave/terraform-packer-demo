@@ -18,6 +18,12 @@ variable "vault-token" {
   default=""
 }
 
+
+#Set to Dev or Production to pull different channels from packer
+variable "environment"{
+  default = "Dev"
+}
+
 variable "region" {
   description = "The region where the resources are created."
   default     = "us-east-2"
