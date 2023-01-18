@@ -39,7 +39,7 @@ worker {
   tags {
     type      = ["worker"]
     env       = ["dev"]
-    project   = ["GoldenImage"]
+    project   = ["goldenimage"]
   }
   
   controller_generated_activation_token="CONTROLLER_GENERATED_TOKEN_HERE"
