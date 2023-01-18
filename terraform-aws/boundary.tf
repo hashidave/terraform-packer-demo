@@ -30,7 +30,7 @@ resource "boundary_credential_library_vault" "vault-library" {
   name                = "hcp-vault-library"
   description         = "HCP Vault credential library"
   credential_store_id = boundary_credential_store_vault.vault-store.id
-  credential_type     = "username_password"
+  credential_type     = "ssh_private_key"
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
 #  credential_mapping_overrides = {
