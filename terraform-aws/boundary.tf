@@ -84,7 +84,7 @@ resource "boundary_target" "server-ssh-brokered" {
     boundary_host_set_plugin.host_set.id
   ]
 
-  brokered_application_credential_source_ids = [
+  brokered_credential_source_ids = [
      boundary_credential_library_vault.vault-library-brokered.id
   ]
 
