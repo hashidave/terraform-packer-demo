@@ -70,8 +70,9 @@ resource "boundary_target" "server-ssh" {
   ]
   
   worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
-#
 }
+
+
 resource "boundary_target" "server-ssh-brokered" {
   name         = "server-ssh"
   description  = "ssh target"
@@ -83,8 +84,8 @@ resource "boundary_target" "server-ssh-brokered" {
     boundary_host_set_plugin.host_set.id
   ]
 
-  injected_application_credential_source_ids = [
-     boundary_credential_library_vault.vault-library.id
+  brokered_application_credential_source_ids = [
+     boundary_credential_library_vault.vault-library-brokered.id
   ]
 
   worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
