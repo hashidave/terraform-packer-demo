@@ -39,6 +39,20 @@ resource "boundary_credential_library_vault" "vault-library" {
 #  }
 }
 
+resource "boundary_credential_library_vault" "vault-library-brokered" {
+  name                = "hcp-vault-library"
+  description         = "HCP Vault credential library"
+  credential_store_id = boundary_credential_store_vault.vault-store.id
+  credential_type     = "username-password"
+  path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
+  http_method         = "GET"
+#  credential_mapping_overrides = {
+#    private_key_attribute            = data.private_key
+#    username_attribute               = data.username
+#  }
+}
+
+
 
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
@@ -58,7 +72,24 @@ resource "boundary_target" "server-ssh" {
   worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
 #
 }
+resource "boundary_target" "server-ssh-brokered" {
+  name         = "server-ssh"
+  description  = "ssh target"
+  type         = "ssh"
+  default_port = "22"
+  scope_id     = var.boundary-project
 
+  host_source_ids = [
+    boundary_host_set_plugin.host_set.id
+  ]
+
+  injected_application_credential_source_ids = [
+     boundary_credential_library_vault.vault-library.id
+  ]
+
+  worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
+
+}
 
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
