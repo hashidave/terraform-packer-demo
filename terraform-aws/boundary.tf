@@ -52,7 +52,7 @@ resource "boundary_credential_library_vault" "vault-library-brokered" {
 
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
-  description  = "ssh target"
+  description  = "ssh target with injected creds"
   type         = "ssh"
   default_port = "22"
   scope_id     = var.boundary-project
@@ -70,8 +70,8 @@ resource "boundary_target" "server-ssh" {
 
 
 resource "boundary_target" "server-ssh-brokered" {
-  name         = "server-ssh"
-  description  = "ssh target"
+  name         = "server-ssh-brokered"
+  description  = "ssh target with brokered creds"
   type         = "ssh"
   default_port = "22"
   scope_id     = var.boundary-project
