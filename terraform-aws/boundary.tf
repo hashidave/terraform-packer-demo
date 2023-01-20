@@ -17,6 +17,10 @@ resource "boundary_host_set_plugin" "host_set" {
 
 }
 
+
+#######################################
+############ Credential Info ##########
+
 resource "boundary_credential_store_vault" "vault-store" {
   name        = "vault-store"
   description = "Demo connection to my HCP Vault"
@@ -26,6 +30,8 @@ resource "boundary_credential_store_vault" "vault-store" {
   namespace   = "admin"
 }
 
+
+### Cred library for injected creds
 resource "boundary_credential_library_vault" "vault-library" {
   name                = "hcp-vault-library"
   description         = "HCP Vault credential library"
@@ -33,12 +39,9 @@ resource "boundary_credential_library_vault" "vault-library" {
   credential_type     = "ssh_private_key"
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
-#  credential_mapping_overrides = {
-#    private_key_attribute            = data.private_key
-#    username_attribute               = data.username
-#  }
 }
 
+### Cred library for brokered creds
 resource "boundary_credential_library_vault" "vault-library-brokered" {
   name                = "hcp-vault-library-brokered"
   description         = "HCP Vault credential library for brokered static creds"
@@ -50,6 +53,8 @@ resource "boundary_credential_library_vault" "vault-library-brokered" {
 
 
 
+####################################
+######  The targets   ##############
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
   description  = "ssh target with injected creds"
@@ -88,14 +93,25 @@ resource "boundary_target" "server-ssh-brokered" {
 
 }
 
+##################################################
+####  The self-managed worker   ##################
+##################################################
+# This is non-trivial to deploy.  First you need an HCP boundary_worker object
+# which will generate a token that has to be passed into the ec2 instance and injected into a config file
+# Currently this is being done with a remote-exec provisioner but plan is to 
+# use AWS user-data when the ec2 is provisioned to pass that along.  
+# 
+
+
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
   description = "Golden Image Workflow Worker"
   name        = "goldenimageworker"
 
-  # The activation token on the HCP side is only good for one run so if we
-  # change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
+  # The activation token on the HCP side is only available on the apply that creates the boundary_worker objevct
+  # so if we later change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
+  # so that we can get the token back.  I supppose we could store it in Vault but that's a task for future Dave.
   lifecycle{
      replace_triggered_by=[aws_instance.boundary-worker]
   }
@@ -103,7 +119,7 @@ resource "boundary_worker" "private-worker"{
 
 
 
-# Deploy a boundary worker into our environment
+# Deploy a boundary worker EC2 into our environment
   data "hcp_packer_iteration" "boundary-worker" {
     bucket_name = "boundary-workers"
     channel     = var.environment 
