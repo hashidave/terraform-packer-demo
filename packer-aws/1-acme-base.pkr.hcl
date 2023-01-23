@@ -27,7 +27,7 @@ variable "version" {
 
 #should be Dev or Production
 variable "environment"{
-  default="Dev"
+  default="dev"
 }
 
 

@@ -25,7 +25,7 @@ variable "hcp_bucket_name" {
 #should be Dev or Production
 # This determines what we use for our base app
 variable "environment"{
-  default="Dev"
+  default="dev"
 }
 
 

@@ -29,7 +29,7 @@ variable "version" {
 # Should be Dev or Production. 
 # Used to select which base image we use
 variable "environment" {
-  default = "Production"
+  default = "production"
 }
 
 
