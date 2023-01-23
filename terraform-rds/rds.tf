@@ -16,14 +16,14 @@ resource "random_password" "pg-password" {
 }
 
 
-resource "aws_db_subnet_group" "db-subnet-group" {
-  name       = "boundary-rds-demo-${var.environment}"
-  subnet_ids = [aws_subnet.BoundaryRDS.cidr_block]
-
-  tags = {
-    Name = "Boundary RDS Demo ${var.environment}"
-  }
-}
+#resource "aws_db_subnet_group" "db-subnet-group" {
+#  name       = "boundary-rds-demo-${var.environment}"
+#  subnet_ids = [aws_subnet.BoundaryRDS.cidr_block]
+#
+#  tags = {
+#    Name = "Boundary RDS Demo ${var.environment}"
+#  }
+#}
 
 
 resource "aws_db_parameter_group" "BoundaryRDS" {
@@ -44,7 +44,7 @@ resource "aws_db_instance" "db-instance" {
   allocated_storage      = 5
   engine                 = "postgres"
   engine_version         = "14.1"
-  username               = "dmr-admin"
+  username               = "dmradmin"
   password               = random_password.pg-password.result
 #  db_subnet_group_name   = aws_db_subnet_group.db-subnet-group
   vpc_security_group_ids = [aws_security_group.BoundaryRDS.id]
@@ -56,4 +56,4 @@ resource "aws_db_instance" "db-instance" {
 
 # Configure Vault Roles to manage this instance
 
-
+#
