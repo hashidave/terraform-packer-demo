@@ -58,7 +58,7 @@ resource "aws_subnet" "BoundaryRDS1" {
   cidr_block = var.subnet1_prefix
   availability_zone = var.availability_zone_1
   tags = {
-    name = "${var.prefix}-subnet"
+    name = "${var.prefix}-subnet1"
   }
 }
 
@@ -68,7 +68,7 @@ resource "aws_subnet" "BoundaryRDS2" {
   availability_zone = var.availability_zone_2
 
   tags = {
-    name = "${var.prefix}-subnet"
+    name = "${var.prefix}-subnet2"
   }
 }
 
