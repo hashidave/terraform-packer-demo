@@ -18,7 +18,7 @@ resource "random_password" "pg-password" {
 
 resource "aws_db_subnet_group" "db-subnet-group" {
   name       = "boundary-rds-demo-${var.environment}"
-  subnet_ids = [aws_subnet.BoundaryRDS.cidr_block]
+  subnet_ids = [aws_subnet.BoundaryRDS.id]
 
   tags = {
     Name = "Boundary RDS Demo ${var.environment}"
