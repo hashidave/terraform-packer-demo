@@ -41,10 +41,26 @@ variable "address_space" {
   default     = "10.0.0.0/16"
 }
 
-variable "subnet_prefix" {
-  description = "The address prefix to use for the subnet."
+variable "subnet1_prefix" {
+  description = "The address prefix to use for the first subnet."
   default     = "10.0.10.0/24"
 }
+
+variable "subnet2_prefix" {
+  description = "The address prefix to use for the second subnet."
+  default     = "10.0.11.0/24"
+}
+
+variable "availability_zone_1" {
+  description = "The availability zone to use for the first subnet."
+  default     = "us-east-2a"
+}
+
+variable "availability_zone_2" {
+  description = "The availability zone to use for the second subnet."
+  default     = "us-east-2b"
+}
+
 
 variable "instance_type" {
   description = "Specifies the AWS instance type."

@@ -51,14 +51,29 @@ resource "aws_vpc" "BoundaryRDS" {
   }
 }
 
-resource "aws_subnet" "BoundaryRDS" {
+
+# RDS Requires subnets in two availability zones
+resource "aws_subnet" "BoundaryRDS1" {
   vpc_id     = aws_vpc.BoundaryRDS.id
-  cidr_block = var.subnet_prefix
+  cidr_block = var.subnet1_prefix
+  availability_zone = var.availability_zone_1
+  tags = {
+    name = "${var.prefix}-subnet"
+  }
+}
+
+resource "aws_subnet" "BoundaryRDS2" {
+  vpc_id     = aws_vpc.BoundaryRDS.id
+  cidr_block = var.subnet2_prefix
+  availability_zone = var.availability_zone_2
 
   tags = {
     name = "${var.prefix}-subnet"
   }
 }
+
+
+
 
 resource "aws_security_group" "BoundaryRDS" {
   name = "${var.prefix}-security-group"
@@ -116,7 +131,12 @@ resource "aws_route_table" "BoundaryRDS" {
   }
 }
 
-resource "aws_route_table_association" "BoundaryRDS" {
-  subnet_id      = aws_subnet.BoundaryRDS.id
+resource "aws_route_table_association" "BoundaryRDS1" {
+  subnet_id      = aws_subnet.BoundaryRDS1.id
+  route_table_id = aws_route_table.BoundaryRDS.id
+}
+
+resource "aws_route_table_association" "BoundaryRDS2" {
+  subnet_id      = aws_subnet.BoundaryRDS2.id
   route_table_id = aws_route_table.BoundaryRDS.id
 }
