@@ -1,3 +1,11 @@
+output "ssh-target"{
+  value=boundary_target.server-ssh.id
+}
+
+output "ssh-brokered-target"{
+  value=boundary_target.server-ssh-brokered.id
+}
+
 output "ubuntu_iteration" {
   value = data.hcp_packer_iteration.ubuntu
 }
