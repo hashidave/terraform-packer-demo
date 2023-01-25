@@ -97,10 +97,6 @@ variable login_approle_role_id {
   default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
 } 
 
-variable VAULT_SECRET {
-  default="xxxx"
-}
-
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"
  default     = ""
