@@ -10,6 +10,13 @@ variable "prefix" {
   default     = "boundary-rds"
 }
 
+#Set to dev or production to pull different channels from packer and deploy from
+#different TF workspaces
+variable "environment"{
+  default = "dev"
+}
+
+
 variable "vault-cluster"{
   default = "https://hashiDaveR-vault-cluster-public-vault-f886c6aa.441332cd.z1.hashicorp.cloud:8200"
 }
@@ -24,11 +31,6 @@ variable "VAULT_TOKEN" {
 # in a future rev we'll make this dynamically generated in the run & get rid of this.
 variable "BOUNDARY_VAULT_TOKEN" {
   default=""
-}
-
-#Set to dev or production to pull different channels from packer
-variable "environment"{
-  default = "dev"
 }
 
 variable "region" {
