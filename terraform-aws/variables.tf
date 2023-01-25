@@ -19,9 +19,9 @@ variable "vault-token" {
 }
 
 
-#Set to Dev or Production to pull different channels from packer
+#Set to dev or production to pull different channels from packer
 variable "environment"{
-  default = "Dev"
+  default = "dev"
 }
 
 variable "region" {
