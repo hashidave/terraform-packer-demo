@@ -1,10 +1,16 @@
-# Get the project ID from the main boundary project
+##############################################################
+####   Get the project ID from the main boundary project  ####
+##############################################################
 data "tfe_outputs" "Boundary" {
   organization = "hashi-DaveR"
-  workspace = "Boundary-Environment"
+  workspace = "Boundary-Environment-${var.environment}"
 }
 
 
+##########################################################################
+####  Provision a dynamic host set into an existing AWS catalog      ##### 
+####  that was created by the main boundary project referenced above #####
+##########################################################################
 resource "boundary_host_set_plugin" "host_set" {
   name            = "GoldenImage AWS ${var.environment} Host Set"
  
@@ -12,7 +18,8 @@ resource "boundary_host_set_plugin" "host_set" {
   host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
   attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_${var.environment}" })
 
-  # Have to set the endpoints to whatever IP Addresses that AWS asssigns
+  # for public endpoints, Have to set the endpoints to whatever IP Addresses that AWS asssigns
+  # not doing that in this environment right now.
   #preferred_endpoints=["cidr:${var.subnet_prefix}"]
 
 }
@@ -20,7 +27,7 @@ resource "boundary_host_set_plugin" "host_set" {
 
 #######################################
 ############ Credential Info ##########
-
+#######################################
 resource "boundary_credential_store_vault" "vault-store" {
   name        = "vault-store"
   description = "Demo connection to my HCP Vault"
@@ -55,6 +62,7 @@ resource "boundary_credential_library_vault" "vault-library-brokered" {
 
 ####################################
 ######  The targets   ##############
+####################################
 resource "boundary_target" "server-ssh" {
   name         = "server-ssh"
   description  = "ssh target with injected creds"
@@ -93,15 +101,13 @@ resource "boundary_target" "server-ssh-brokered" {
 
 }
 
-##################################################
-####  The self-managed worker   ##################
-##################################################
-# This is non-trivial to deploy.  First you need an HCP boundary_worker object
-# which will generate a token that has to be passed into the ec2 instance and injected into a config file
-# Currently this is being done with a remote-exec provisioner but plan is to 
-# use AWS user-data when the ec2 is provisioned to pass that along.  
-# 
-
+#################################################################################################################
+####  The self-managed worker                                                                               #####
+# This is non-trivial to deploy.  First you need an HCP boundary_worker object                              ##### 
+# which will generate a token that has to be passed into the ec2 instance and injected into a config file   #####
+# Currently this is being done with a remote-exec provisioner but plan is to                                #####   
+# use AWS user-data when the ec2 is provisioned to pass that along.                                         ##### 
+# ###############################################################################################################
 
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
@@ -134,7 +140,8 @@ resource "boundary_worker" "private-worker"{
  
   resource "aws_instance" "boundary-worker" {
     ami                         = data.hcp_packer_image.boundary-worker.cloud_image_id
-    instance_type               = var.instance_type
+ 
+   instance_type               = var.instance_type
     key_name                    = "DaveTestKey-Ohio"
     associate_public_ip_address = true
     subnet_id                   = aws_subnet.hashicat.id
@@ -151,6 +158,8 @@ resource "boundary_worker" "private-worker"{
 
   # This exist only to get around the circular dependency between the worker & the aws_eip
   # that we have to put into the config file.
+  # should update in the future to use some kind of user-data structure that gets passed in
+  # when the cloud provisions the instance
   resource "null_resource" "worker-provisioner" {
     triggers={
       worker-id=aws_instance.boundary-worker.id,
