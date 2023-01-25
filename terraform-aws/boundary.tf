@@ -33,7 +33,7 @@ resource "boundary_credential_store_vault" "vault-store" {
   description = "Demo connection to my HCP Vault"
   address     = var.vault-cluster
   token       = var.vault-token 
-  scope_id    = var.boundary-project
+  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
   namespace   = "admin"
 }
 
@@ -68,7 +68,7 @@ resource "boundary_target" "server-ssh" {
   description  = "ssh target with injected creds"
   type         = "ssh"
   default_port = "22"
-  scope_id     = var.boundary-project
+  scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
   ]
@@ -78,7 +78,7 @@ resource "boundary_target" "server-ssh" {
   
   ]
   
-  worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
+  worker_filter="\"goldenimage\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 }
 
 
@@ -87,7 +87,7 @@ resource "boundary_target" "server-ssh-brokered" {
   description  = "ssh target with brokered creds"
   type         = "ssh"
   default_port = "22"
-  scope_id     = var.boundary-project
+  scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
 
   host_source_ids = [
     boundary_host_set_plugin.host_set.id
@@ -97,7 +97,7 @@ resource "boundary_target" "server-ssh-brokered" {
      boundary_credential_library_vault.vault-library-brokered.id
   ]
 
-  worker_filter="\"goldenimage\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
+  worker_filter="\"goldenimage\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 
 }
 
