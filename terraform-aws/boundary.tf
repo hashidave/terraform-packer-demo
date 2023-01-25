@@ -29,7 +29,7 @@ resource "boundary_host_set_plugin" "host_set" {
 ############ Credential Info ##########
 #######################################
 resource "boundary_credential_store_vault" "vault-store" {
-  name        = "vault-store"
+  name        = "vault-store-${var.environment}"
   description = "Demo connection to my HCP Vault"
   address     = var.vault-cluster
   token       = var.vault-token 
@@ -40,21 +40,21 @@ resource "boundary_credential_store_vault" "vault-store" {
 
 ### Cred library for injected creds
 resource "boundary_credential_library_vault" "vault-library" {
-  name                = "hcp-vault-library"
-  description         = "HCP Vault credential library"
+  name                = "hcp-vault-library-${var.environment}"
+  description         = "HCP Vault credential library for ${var.environment}"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "ssh_private_key"
-  path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
+  path                = "kv/data/GoldenImage-${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
 
 ### Cred library for brokered creds
 resource "boundary_credential_library_vault" "vault-library-brokered" {
-  name                = "hcp-vault-library-brokered"
-  description         = "HCP Vault credential library for brokered static creds"
+  name                = "hcp-vault-library-brokered ${var.environment}"
+  description         = "HCP Vault credential library for brokered static creds for ${var.environment}"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "username_password"
-  path                = "kv/data/GoldenImage-UserPW${var.environment}" # change to Vault backend path
+  path                = "kv/data/GoldenImage-UserPWi-${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
 
