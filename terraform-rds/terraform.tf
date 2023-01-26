@@ -18,7 +18,7 @@ terraform {
     hostname     = "app.terraform.io"
 
     workspaces {
-      tags = ["Boundary-RDS"]
+      tags = ["boundary-rds"]
     }
   }
 }
