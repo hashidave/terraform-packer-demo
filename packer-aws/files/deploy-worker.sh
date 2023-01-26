@@ -38,8 +38,8 @@ worker {
   auth_storage_path = "/opt/boundary/worker1"
   tags {
     type      = ["worker"]
-    env       = ["dev"]
-    project   = ["goldenimage"]
+    env       = ["ENVIRONMENT_TAG_HERE"]
+    project   = ["PROJECT_TAG_HERE"]
   }
   
   controller_generated_activation_token="CONTROLLER_GENERATED_TOKEN_HERE"
