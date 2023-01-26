@@ -46,7 +46,7 @@ variable "instance_type" {
 
 variable "server_count" {
   description = "Specifies the number of instances to create."
-  default     = "3"
+  default     = "1"
 }
 
 
@@ -61,6 +61,7 @@ variable "spot_instance_count" {
   default     = "0"
 }
 
+# We should pull this from vault
 variable "ssh_private_key" {
   description = "the ssh private key for provisioner"
   default     = ""
@@ -84,10 +85,6 @@ variable "boundary-cluster-id"{
 variable login_approle_role_id {
   default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
 } 
-
-variable VAULT_SECRET {
-  default="xxxx"
-}
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"
