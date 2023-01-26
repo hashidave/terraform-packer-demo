@@ -31,7 +31,7 @@ resource "boundary_host_set_static" "rds_host_set" {
 ##########################################################################
 #### Create host object & load the RDS instances into the host set   ##### 
 ##########################################################################
-resource boundary_host rds_host{
+resource boundary_host_static rds_host{
   type            = "static"
   name            = aws_db_instance.db-instance.name
   description     = "rds database ${aws_db_instance.db-instance.name}"
