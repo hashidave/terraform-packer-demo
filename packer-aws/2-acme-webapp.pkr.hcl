@@ -22,10 +22,8 @@ variable "hcp_bucket_name" {
   default = "acme-webapp"
 }
 
-#should be Dev or Production
-# This determines what we use for our base app
-variable "environment"{
-  default="dev"
+# specify the channel name from whence to pull the base image.
+variable "base-image-channel"{
 }
 
 
@@ -46,7 +44,7 @@ variable "hcp_bucket_name_base" {
 # Returh the most recent Iteration (or build) of an image, given a Channel
 data "hcp-packer-iteration" "acme-base" {
   bucket_name = var.hcp_bucket_name_base
-  channel     = var.environment
+  channel     = var.base-image-channel
 }
 
 
