@@ -23,30 +23,6 @@ provider "boundary" {
   password_auth_method_password   = var.TF_WORKSPACE_PWD
 }
 
-#provider "vault"{
-#  address = "https://hashiDaveR-vault-cluster-public-vault-f886c6aa.441332cd.z1.hashicorp.cloud:8200"
-#  auth_login{
-#    path="auth/approle/login"
-#    parameters={
-#      role_id=var.login_approle_role_id
-#      secret_id=var.VAULT_SECRET
-#    }
-#  }  
-#}
-
-# get info from Vault
-#resource "vault_mount" "kvv2" {
-#  path        = "kvv2"
-#  type        = "kv"
-#  options     = { version = "2" }
-#  description = "KV Version 2 secret engine mount"
-#}
-
-# data "vault_generic_secret" "linux-creds" {
-#   path  = "kv/GoldenImageDev"
-# }
-
-
 
 #
 # Core AWS Plumbing
