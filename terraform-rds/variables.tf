@@ -84,15 +84,6 @@ variable "boundary-cluster-id"{
   default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
 }
 
-variable "boundary-project"{
-  default="p_t0BBolQK8o"
-}
-
-# used to construct the host filter for a host set of this workspace's hosts
-variable "boundary-host-set-base-tag"{
-  default="BOUNDARY_RDS"
-}
-
 variable login_approle_role_id {
   default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
 } 
