@@ -25,11 +25,6 @@ variable "version" {
   default = "2.0.0"
 }
 
-#should be Dev or Production
-variable "environment"{
-  default="dev"
-}
-
 
 #--------------------------------------------------
 # AWS Image Config and Definition
@@ -58,7 +53,7 @@ source "amazon-ebs" "acme-base" {
 
 # Vault Connection so we can get some secrets
 local "UbuntuPassword"{
-  expression =  vault ("kv/data/GoldenImageDev", "pasword")
+  expression =  vault ("kv/data/ubuntu-user", "password")
   sensitive = true
 }
 
