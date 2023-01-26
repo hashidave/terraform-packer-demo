@@ -8,7 +8,7 @@ provider "aws" {
   default_tags {
     tags = {
       Owner = "Dave"
-      Demo       = "GoldenImage"
+      Demo       = var.prefix
       Environment = var.environment      
       Rep = "Tim"
     }
@@ -27,18 +27,18 @@ provider "boundary" {
 #
 # Core AWS Plumbing
 #
-resource "aws_vpc" "hashicat" {
+resource "aws_vpc" "goldenimage" {
   cidr_block           = var.address_space
   enable_dns_hostnames = true
 
   tags = {
     name = "${var.prefix}-vpc-${var.region}"
-    environment = "production"
+    environment = var.environment
   }
 }
 
 resource "aws_subnet" "hashicat" {
-  vpc_id     = aws_vpc.hashicat.id
+  vpc_id     = aws_vpc.goldenimage.id
   cidr_block = var.subnet_prefix
 
   tags = {
@@ -49,7 +49,7 @@ resource "aws_subnet" "hashicat" {
 resource "aws_security_group" "hashicat" {
   name = "${var.prefix}-security-group"
 
-  vpc_id = aws_vpc.hashicat.id
+  vpc_id = aws_vpc.goldenimage.id
 
   ingress {
     from_port   = 22
@@ -85,24 +85,24 @@ resource "aws_security_group" "hashicat" {
   }
 }
 
-resource "aws_internet_gateway" "hashicat" {
-  vpc_id = aws_vpc.hashicat.id
+resource "aws_internet_gateway" "goldenimage" {
+  vpc_id = aws_vpc.goldenimage.id
 
   tags = {
-    Name = "${var.prefix}-internet-gateway"
+    Name = "${var.prefix}-${var.environment}-internet-gateway"
   }
 }
 
-resource "aws_route_table" "hashicat" {
-  vpc_id = aws_vpc.hashicat.id
+resource "aws_route_table" "goldenimage" {
+  vpc_id = aws_vpc.goldenimage.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.hashicat.id
+    gateway_id = aws_internet_gateway.goldenimage.id
   }
 }
 
-resource "aws_route_table_association" "hashicat" {
+resource "aws_route_table_association" "goldenimage" {
   subnet_id      = aws_subnet.hashicat.id
-  route_table_id = aws_route_table.hashicat.id
+  route_table_id = aws_route_table.goldenimage.id
 }

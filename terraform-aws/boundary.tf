@@ -12,11 +12,11 @@ data "tfe_outputs" "Boundary" {
 ####  that was created by the main boundary project referenced above #####
 ##########################################################################
 resource "boundary_host_set_plugin" "host_set" {
-  name            = "GoldenImage AWS ${var.environment} Host Set"
+  name            = "${var.prefix} ${var.environment} Host Set"
  
   # The host catalog comes from an external state for our general boundary environment
   host_catalog_id = data.tfe_outputs.Boundary.nonsensitive_values.host_catalog
-  attributes_json = jsonencode({ "filters" = "tag:host-set=DMR_GOLDEN_IMAGE_AWS_${var.environment}" })
+  attributes_json = jsonencode({ "filters" = "tag:host-set=${var.prefix}_AWS_${var.environment}" })
 
   # for public endpoints, Have to set the endpoints to whatever IP Addresses that AWS asssigns
   # not doing that in this environment right now.
@@ -29,8 +29,8 @@ resource "boundary_host_set_plugin" "host_set" {
 ############ Credential Info ##########
 #######################################
 resource "boundary_credential_store_vault" "vault-store" {
-  name        = "vault-store-${var.environment}"
-  description = "Demo connection to my HCP Vault"
+  name        = "vault-store-${var.prefix}-${var.environment}"
+  description = "Demo connection to my HCP Vault for the ${var.prefix} ${var.environment} environment"
   address     = var.vault-cluster
   token       = var.vault-token 
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
@@ -40,7 +40,7 @@ resource "boundary_credential_store_vault" "vault-store" {
 
 ### Cred library for injected creds
 resource "boundary_credential_library_vault" "vault-library" {
-  name                = "hcp-vault-library-${var.environment}"
+  name                = "hcp-vault-library-${var.prefix}{-${var.environment}"
   description         = "HCP Vault credential library for ${var.environment}"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "ssh_private_key"
@@ -50,11 +50,11 @@ resource "boundary_credential_library_vault" "vault-library" {
 
 ### Cred library for brokered creds
 resource "boundary_credential_library_vault" "vault-library-brokered" {
-  name                = "hcp-vault-library-brokered ${var.environment}"
-  description         = "HCP Vault credential library for brokered static creds for ${var.environment}"
+  name                = "hcp-vault-library-brokered ${var.prefix} ${var.environment}"
+  description         = "HCP Vault credential library for brokered static creds for the ${var.prefix} ${var.environment} environment"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "username_password"
-  path                = "kv/data/GoldenImage-UserPWi-${var.environment}" # change to Vault backend path
+  path                = "kv/data/GoldenImage-UserPW-${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
 
@@ -64,8 +64,8 @@ resource "boundary_credential_library_vault" "vault-library-brokered" {
 ######  The targets   ##############
 ####################################
 resource "boundary_target" "server-ssh" {
-  name         = "server-ssh"
-  description  = "ssh target with injected creds"
+  name         = "${var.prefix}-${var.environment}-server-ssh"
+  description  = "ssh target with injected creds for the ${var.prefix} ${var.environment} environment"
   type         = "ssh"
   default_port = "22"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
@@ -78,13 +78,13 @@ resource "boundary_target" "server-ssh" {
   
   ]
   
-  worker_filter="\"goldenimage\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
+  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 }
 
 
 resource "boundary_target" "server-ssh-brokered" {
-  name         = "server-ssh-brokered"
-  description  = "ssh target with brokered creds"
+  name         = "${var.prefix}-${var.environment}-server-ssh-brokered"
+  description  = "ssh target with brokered creds for the ${var.prefix} ${var.environment} environment"
   type         = "ssh"
   default_port = "22"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
@@ -97,7 +97,7 @@ resource "boundary_target" "server-ssh-brokered" {
      boundary_credential_library_vault.vault-library-brokered.id
   ]
 
-  worker_filter="\"goldenimage\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
+  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 
 }
 
@@ -112,8 +112,8 @@ resource "boundary_target" "server-ssh-brokered" {
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
-  description = "Golden Image Workflow Worker"
-  name        = "goldenimageworker"
+  description = "Golden Image Workflow Worker for the ${var.prefix} ${var.environment} environment"
+  name        = "${var.prefix}-${var.environment}-worker"
 
   # The activation token on the HCP side is only available on the apply that creates the boundary_worker objevct
   # so if we later change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
@@ -203,9 +203,9 @@ resource "aws_eip_association" "boundary-worker" {
 
 
 resource "aws_security_group" "boundary-worker" {
-  name = "boundary-worker-security-group"
+  name = "${var.prefix}-${var.environment}-boundary-worker-security-group"
 
-  vpc_id = aws_vpc.hashicat.id
+  vpc_id = aws_vpc.goldenimage.id
 ingress {
     from_port   = 22
     to_port     = 22
