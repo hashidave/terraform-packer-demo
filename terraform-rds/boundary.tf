@@ -3,14 +3,17 @@
 ##############################################################
 data "tfe_outputs" "Boundary" {
   organization = "hashi-DaveR"
-  workspace = "Boundary-Environment"
+  workspace = "Boundary-Environment-dev"
 }
 
 ##########################################################################
 ####  Provision a static host catalog into the project               ##### 
 ##########################################################################
-resource boundary_host_catalog "rds_host_catalog"{
-
+resource boundary_host_catalog_static "rds_host_catalog"{
+  name            = "Static Host Catalog ${var.prefix} ${var.environment}"
+  description     = "${var.prefix} ${var.environment} static host catalog"
+  #type            = "static"
+  scope_id        = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
 }
 
 
@@ -18,17 +21,22 @@ resource boundary_host_catalog "rds_host_catalog"{
 ##########################################################################
 ####  Provision a static host set into the catalog                   ##### 
 ##########################################################################
-resource "boundary_host_set" "rds_host_set" {
+resource "boundary_host_set_static" "rds_host_set" {
   name            = "${var.prefix} ${var.environment} RDS Host Set"
+  type            = "static"
   # The host catalog comes from an external state for our general boundary environment
-  host_catalog_id = boundary_host_catalog.rds_host_catalog.id
+  host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
 }
 
 ##########################################################################
 #### Create host object & load the RDS instances into the host set   ##### 
 ##########################################################################
 resource boundary_host rds_host{
-
+  type            = "static"
+  name            = aws_db_instance.db-instance.name
+  description     = "rds database ${aws_db_instance.db-instance.name}"
+  address         = aws_db_instance.db-instance.address
+  host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
 }
 
 
@@ -40,7 +48,7 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
   description = "Demo connection to my HCP Vault for ${var.environment}"
   address     = var.vault-cluster
   token       = var.BOUNDARY_VAULT_TOKEN
-  scope_id    = var.boundary-project
+  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   namespace   = "admin"
 }
 
@@ -75,9 +83,9 @@ resource "boundary_target" "rds-readwrite" {
   description  = "rds target with read-write creds injected"
   type         = "tcp"
   default_port = "22"
-  scope_id     = var.boundary-project
+  scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
-    boundary_host_set_plugin.rds_host_set.id
+    boundary_host_set_static.rds_host_set.id
   ]
   
   injected_application_credential_source_ids = [
@@ -93,9 +101,9 @@ resource "boundary_target" "rds-readonly" {
   description  = "rds target with read-only creds injected"
   type         = "tcp"
   default_port = "22"
-  scope_id     = var.boundary-project
+  scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
-    boundary_host_set_plugin.rds_host_set.id
+    boundary_host_set_static.rds_host_set.id
   ]
   
   injected_application_credential_source_ids = [
@@ -108,8 +116,14 @@ resource "boundary_target" "rds-readonly" {
 ####################################
 ######  Test Users    ##############
 ####################################
+resource "boundary_auth_method_password" "auth-method-pw"{
+  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  name          = "${var.prefix}-${var.environment}-password"
+  description   = "Password auth for ${var.prefix}-${var.environment}"
+}
+
 resource "boundary_account_password" "mr-readonly" {
-  auth_method_id = boundary_auth_method.password.id
+  auth_method_id = boundary_auth_method_password.auth-method-pw.id
   type           = "password"
   login_name     = "mr-readonly-${var.environment}"
   password       = "$uper$ecure"
@@ -119,11 +133,11 @@ resource "boundary_user" "mr-readonly" {
   name        = "mr-readonly-${var.environment}"
   description = "Mr Readonly's user resource"
   account_ids = [boundary_account_password.mr-readonly.id]
-  scope_id    = boundary_scope.org.id
+  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
 }
 
-resource "boundary_account_password" "mr-readwrite" i
-  auth_method_id = boundary_auth_method.password.id
+resource "boundary_account_password" "mr-readwrite"{
+  auth_method_id = boundary_auth_method_password.auth-method-pw.id
   type           = "password"
   login_name     = "mr-readwrite-${var.environment}"
   password       = "$uper$ecure"
@@ -133,7 +147,8 @@ resource "boundary_user" "mr-readwrite" {
   name        = "mr-readwrite-${var.environment}"
   description = "Mr Readwrite's user resource"
   account_ids = [boundary_account_password.mr-readwrite.id]
-  scope_id    = boundary_scope.org.id
+  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.org_scope
+
 }
 
 
