@@ -12,7 +12,7 @@
 resource "random_password" "pg-password" {
   length           = 16
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "!%"
 }
 
 
