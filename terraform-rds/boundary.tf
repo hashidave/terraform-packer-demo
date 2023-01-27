@@ -33,8 +33,9 @@ resource "boundary_host_set_static" "rds_host_set" {
 ##########################################################################
 resource boundary_host_static rds_host{
   type            = "static"
-  name            = aws_db_instance.db-instance.name
-  description     = "rds database ${aws_db_instance.db-instance.name}"
+  #name            = aws_db_instance.db-instance.name
+  name = "db1"
+  #description     = "rds database ${aws_db_instance.db-instance.name}"
   address         = aws_db_instance.db-instance.address
   host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
 }
@@ -99,7 +100,7 @@ resource "boundary_target" "rds-readwrite" {
 resource "boundary_target" "rds-readonly" {
   name         = "rds-readonly-${var.environment}"
   description  = "rds target with read-only creds injected"
-  type         = "tcp"
+  type         = "postgres"
   default_port = "22"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
