@@ -1,6 +1,6 @@
 # Vault configuration
 resource "vault_mount" "db" {
-  path = "postgres-{$var.prefix}-${var.environment}"
+  path = "database/postgres-{$var.prefix}-${var.environment}"
   type = "database"
 }
 
