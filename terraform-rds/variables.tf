@@ -84,16 +84,16 @@ variable "boundary-cluster-id"{
   default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
 }
 
-variable login_approle_role_id {
-  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
-} 
+#variable login_approle_role_id {
+#  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
+#} 
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"
  default     = ""
 }
 
-variable "ubuntu_password" {
-  default = ""
-}
+#variable "ubuntu_password" {
+#  default = ""
+#}
 
