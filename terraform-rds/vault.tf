@@ -6,7 +6,8 @@
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
-  backend       = "database/postgres-{$var.prefix}-${var.environment}"
+#  backend       = "database/postgres-{$var.prefix}-${var.environment}"
+  backend       = "database"
   name          = "postgres"
   allowed_roles = ["rw", "ro"]
 
