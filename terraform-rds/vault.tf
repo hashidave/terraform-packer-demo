@@ -12,7 +12,8 @@ resource "vault_database_secret_backend_connection" "postgres" {
   allowed_roles = ["rw", "ro"]
 
   postgresql {
-    connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/test}"
+#    connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/test}"
+    connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/boundary-rds-demo-${var.environment}}"
   }
 }
 
