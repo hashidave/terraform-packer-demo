@@ -39,7 +39,7 @@ resource "aws_db_parameter_group" "BoundaryRDS" {
 
 
 resource "aws_db_instance" "db-instance" {
-  identifier             = "boundary-rds-demo-${var.prefix}"
+  identifier             = "boundary-rds-demo-${var.environment}"
   instance_class         = "db.t3.micro"
   db_name                = "test"
   allocated_storage      = 5
