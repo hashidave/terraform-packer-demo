@@ -10,6 +10,11 @@ variable "prefix" {
   default     = "boundary-rds"
 }
 
+variable "region" {
+  description = "The region where the resources are created."
+  default     = "us-east-2"
+}
+
 #Set to dev or production to pull different channels from packer and deploy from
 #different TF workspaces
 variable "environment"{
@@ -33,10 +38,6 @@ variable "BOUNDARY_VAULT_TOKEN" {
   default=""
 }
 
-variable "region" {
-  description = "The region where the resources are created."
-  default     = "us-east-2"
-}
 
 variable "address_space" {
   description = "The address space that is used by the virtual network. You can supply more than one address space. Changing this forces a new resource to be created."
