@@ -41,6 +41,7 @@ resource "aws_db_parameter_group" "BoundaryRDS" {
 resource "aws_db_instance" "db-instance" {
   identifier             = "boundary-rds-demo-${var.prefix}"
   instance_class         = "db.t3.micro"
+  db_name                = "test"
   allocated_storage      = 5
   engine                 = "postgres"
   engine_version         = "14.3"
@@ -54,6 +55,6 @@ resource "aws_db_instance" "db-instance" {
 }
 
 
-# Configure Vault Roles to manage this instance
+# Set up a table & a couple of roles in postgres
 
-#
+
