@@ -89,7 +89,7 @@ resource "boundary_target" "rds-readwrite" {
     boundary_host_set_static.rds_host_set.id
   ]
   
-  injected_application_credential_source_ids = [
+  brokered_credential_source_ids = [
     boundary_credential_library_vault.vault-library-readwrite.id
   
   ]
@@ -100,14 +100,14 @@ resource "boundary_target" "rds-readwrite" {
 resource "boundary_target" "rds-readonly" {
   name         = "rds-readonly-${var.environment}"
   description  = "rds target with read-only creds injected"
-  type         = "postgres"
-  default_port = "22"
+  type         = "tcp"
+  default_port = "5432"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
     boundary_host_set_static.rds_host_set.id
   ]
   
-  injected_application_credential_source_ids = [
+  brokered_credential_source_ids = [
     boundary_credential_library_vault.vault-library-readonly.id
   ]
   
