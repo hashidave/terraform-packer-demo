@@ -118,7 +118,7 @@ resource "boundary_target" "rds-readonly" {
 ######  Test Users    ##############
 ####################################
 resource "boundary_auth_method_password" "auth-method-pw"{
-  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.org_scope
   name          = "${var.prefix}-${var.environment}-password"
   description   = "Password auth for ${var.prefix}-${var.environment}"
 }
