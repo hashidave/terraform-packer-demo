@@ -1,12 +1,12 @@
-# Vault configuration
-resource "vault_mount" "db" {
-  path = "database/postgres-{$var.prefix}-${var.environment}"
-  type = "database"
-}
+## Vault configuration
+#resource "vault_mount" "db" {
+#  path = "database/postgres-{$var.prefix}-${var.environment}"
+#  type = "database"
+#}
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
-  backend       = vault_mount.db.path
+  backend       = "database/postgres-{$var.prefix}-${var.environment}"
   name          = "postgres"
   allowed_roles = ["rw", "ro"]
 
@@ -17,7 +17,7 @@ resource "vault_database_secret_backend_connection" "postgres" {
 
 # Create a read-write role
 resource "vault_database_secret_backend_role" "rw-role" {
-  backend             = vault_mount.db.path
+  backend             = "database/postgres-{$var.prefix}-${var.environment}"
   name                = "rw"
   db_name             = vault_database_secret_backend_connection.postgres.name
   creation_statements = ["CREATE ROLE '{{name}}' WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
@@ -29,7 +29,7 @@ resource "vault_database_secret_backend_role" "rw-role" {
 
 # Create a read-only role
 resource "vault_database_secret_backend_role" "role" {
-  backend             = vault_mount.db.path
+  backend             = "database/postgres-{$var.prefix}-${var.environment}" 
   name                = "ro"
   db_name             = vault_database_secret_backend_connection.postgres.name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
@@ -43,10 +43,10 @@ resource "vault_policy" "read-write" {
   name = "read-postgres-${var.prefix}-${var.environment}"
 
   policy = <<EOT
-path "postgres-{$var.prefix}-${var.environment}/ro" {
+path "database/postgres/postgres-{$var.prefix}-${var.environment}/ro" {
   capabilities = ["read"]
 }
-path "postgres-{$var.prefix}-${var.environment}/rw" {
+path "database/postgres/postgres-{$var.prefix}-${var.environment}/rw" {
   capabilities = ["read"]
 }
 
