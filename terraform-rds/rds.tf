@@ -55,6 +55,5 @@ resource "aws_db_instance" "db-instance" {
 }
 
 
-# Set up a table & a couple of roles in postgres
 
 
