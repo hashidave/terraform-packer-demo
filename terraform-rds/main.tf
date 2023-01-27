@@ -28,13 +28,21 @@ provider "vault"{
   token=var.VAULT_TOKEN
 }
 
-# get info from Vault
-#resource "vault_mount" "kvv2" {
-#  path        = "kvv2"
-#  type        = "kv"
-#  options     = { version = "2" }
-#  description = "KV Version 2 secret engine mount"
+# So we can provision our stuffs
+#provider "postgresql" {
+#  host            = aws_db_parameter_group.BoundaryRDS.address
+#  port            = aws_db_parameter_group.BoundaryRDS.address
+#  database        = "test"
+#  username        = "dmradmin"
+#  password        = random_password.pg-password.result
+#  sslmode         = "require"
+#  connect_timeout = 15
+
+  # We may have to put some dependencies in here so vault doesn't rotate our
+  # admin user password before we have a chance to configure the db 
 #}
+
+
 
 
 
