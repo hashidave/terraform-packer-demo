@@ -134,7 +134,7 @@ resource "boundary_user" "mr-readonly" {
   name        = "mr-readonly-${var.environment}"
   description = "Mr Readonly's user resource"
   account_ids = [boundary_account_password.mr-readonly.id]
-  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.org_scope
 }
 
 resource "boundary_account_password" "mr-readwrite"{
