@@ -19,6 +19,9 @@ output "random-password"{
 }
 
 
+output "rds-url"{
+  value ="postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address    }:${aws_db_instance.db-instance.port}/postgres"
+}
 
 #output "test"{
 #  value=formatlist("cidr:%s/32", aws_eip.hashicat.*.public_ip)
