@@ -12,7 +12,7 @@ resource "vault_mount" "database" {
 resource "vault_database_secret_backend_connection" "postgres" {
  count = var.db-count
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
-  backend       = "{vault_mount.database.path}"
+  backend       = vault_mount.database.path
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
 
