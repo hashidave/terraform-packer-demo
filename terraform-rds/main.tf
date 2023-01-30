@@ -26,6 +26,7 @@ provider "boundary" {
 provider "vault"{
   address = var.vault-cluster
   token=var.VAULT_TOKEN
+  namespace = "terraform-demos"
 }
 
 # So we can provision our stuffs
