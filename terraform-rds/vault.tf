@@ -3,7 +3,8 @@
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
  count = var.db-count
-  backend       = "database/postgres-${var.prefix}-${var.environment}"
+  #backend       = "database/postgres-${var.prefix}-${var.environment}"
+  backend       = "database"
   name          = "postgres-${var.prefix}-${var.environment}"
   allowed_roles = ["rw", "ro"]
 
