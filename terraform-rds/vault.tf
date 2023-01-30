@@ -11,6 +11,10 @@ resource "vault_database_secret_backend_connection" "postgres" {
   postgresql {
     connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/postgres"
   }
+
+  depends_on=[
+    aws_db_instance.db-instance
+  ]
 }
 
 # Create a read-write role
