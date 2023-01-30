@@ -20,8 +20,7 @@ resource "vault_database_secret_backend_role" "rw-role" {
   backend             = "database"
   name                = "rw-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
-  creation_statements = ["CREATE ROLE '{{name}}' WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
-                         "GRANT pg_write_all_data TO '{{name}}';"
+  creation_statements = ["CREATE ROLE '{{name}}' WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT pg_write_all_data TO '{{name}}';"
                         ]
   default_ttl         = 3600
 }
@@ -34,8 +33,7 @@ resource "vault_database_secret_backend_role" "role" {
   backend             = "database"
   name                = "ro-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
-  creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
-                         "GRANT pg_read_all_data to '{{name}}';"
+  creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT pg_read_all_data to '{{name}}';"
                         ]
   default_ttl         = 3600
 }
