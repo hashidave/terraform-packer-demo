@@ -1,7 +1,7 @@
 ## Vault configuration
-resource "vault_namespace" "namespace"{
-  path = "terraform-demos/${var.prefix}-${var.environment}"
-}
+#resource "vault_namespace" "namespace"{
+#  path = "terraform-demos/${var.prefix}-${var.environment}"
+#}
 
 resource "vault_mount" "database" {
   path      = "${var.prefix}-${var.environment}/database"
@@ -44,7 +44,8 @@ resource "vault_database_secret_backend_role" "rw-role" {
 resource "vault_database_secret_backend_role" "role" {
   count= var.db-count
 #  backend             = "database/postgres-${var.prefix}-${var.environment}" 
-  backend             = "database"
+  #backend             = "database"
+  backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "ro-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
@@ -59,10 +60,10 @@ resource "vault_policy" "read-write" {
   name = "read-postgres-${var.prefix}-${var.environment}-${count.index}"
 
   policy = <<EOT
-path "database/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/ro" {
+path "${vault_mount.database.path}/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/ro" {
   capabilities = ["read"]
 }
-path "database/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/rw" {
+path "/${vault_mount.database.path}/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/rw" {
   capabilities = ["read"]
 }
 
