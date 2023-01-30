@@ -5,7 +5,7 @@ resource "vault_database_secret_backend_connection" "postgres" {
  count = var.db-count
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
   backend       = "database"
-  name          = "postgres-${var.prefix}-${var.environment}"
+  name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw", "ro"]
 
   postgresql {
@@ -16,7 +16,8 @@ resource "vault_database_secret_backend_connection" "postgres" {
 # Create a read-write role
 resource "vault_database_secret_backend_role" "rw-role" {
   count               = var.db-count
-  backend             = "database/postgres-${var.prefix}-${var.environment}"
+# backend             = "database/postgres-${var.prefix}-${var.environment}"
+  backend             = "database"
   name                = "rw"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE '{{name}}' WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
@@ -29,7 +30,8 @@ resource "vault_database_secret_backend_role" "rw-role" {
 # Create a read-only role
 resource "vault_database_secret_backend_role" "role" {
   count= var.db-count
-  backend             = "database/postgres-${var.prefix}-${var.environment}" 
+#  backend             = "database/postgres-${var.prefix}-${var.environment}" 
+  backend             = "database"
   name                = "ro"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
@@ -41,13 +43,13 @@ resource "vault_database_secret_backend_role" "role" {
 # set up roles so that boundary can generate secrets
 resource "vault_policy" "read-write" {
   count = var.db-count
-  name = "read-postgres-${var.prefix}-${var.environment}"
+  name = "read-postgres-${var.prefix}-${var.environment}-${count.index}"
 
   policy = <<EOT
-path "database/postgres/postgres-{$var.prefix}-${var.environment}/ro" {
+path "database/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/ro" {
   capabilities = ["read"]
 }
-path "database/postgres/postgres-{$var.prefix}-${var.environment}/rw" {
+path "database/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/rw" {
   capabilities = ["read"]
 }
 
