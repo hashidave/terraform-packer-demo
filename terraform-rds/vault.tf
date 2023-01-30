@@ -1,8 +1,7 @@
 ## Vault configuration
 resource "vault_mount" "database" {
-  path      = "${var.prefix}-${var.environment}/database"
+  path      = "terraform-demos/${var.prefix}-${var.environment}/database"
   type      = "database"
-  namespace = "terraform-demos"
 }
 
 # Create a DB Connection
