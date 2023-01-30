@@ -60,3 +60,15 @@ path "database/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}
 EOT
 }
 
+
+# Create a vault token to hand off to boundary
+resource "vault_token" "boundary_vault_token"{
+  count = var.db-count
+  period="168h"
+  no_default_policy = true
+  policies= [
+    #give it all the policies that we created above plus the general one
+    "general-token-policy", vault_policy.read-write 
+  ]
+
+}
