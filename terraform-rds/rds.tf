@@ -44,7 +44,7 @@ resource "aws_db_instance" "db-instance" {
   db_name                = "test"
   allocated_storage      = 5
   engine                 = "postgres"
-  engine_version         = "14.3"
+  engine_version         = "22.5"
   username               = "dmradmin"
   password               = random_password.pg-password.result
   db_subnet_group_name   = aws_db_subnet_group.db-subnet-group.name
