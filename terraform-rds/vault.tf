@@ -44,7 +44,7 @@ resource "vault_database_secret_backend_role" "rw-role" {
 resource "vault_database_secret_backend_role" "role" {
   count= var.db-count
 #  backend             = "database/postgres-${var.prefix}-${var.environment}" 
-  #backend             = "database"
+#  backend             = "database"
   backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "ro-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
