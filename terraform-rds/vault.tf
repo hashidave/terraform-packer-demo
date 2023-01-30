@@ -1,11 +1,8 @@
 ## Vault configuration
-#resource "vault_mount" "db" {
-#  path = "database/postgres-{$var.prefix}-${var.environment}"
-#  type = "database"
-#}
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
+ count = var.db-count
 #  backend       = "database/postgres-{$var.prefix}-${var.environment}"
   backend       = "database"
   name          = "postgres"
@@ -19,9 +16,10 @@ resource "vault_database_secret_backend_connection" "postgres" {
 
 # Create a read-write role
 resource "vault_database_secret_backend_role" "rw-role" {
+  count               = var.db-count
   backend             = "database/postgres-{$var.prefix}-${var.environment}"
   name                = "rw"
-  db_name             = vault_database_secret_backend_connection.postgres.name
+  db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE '{{name}}' WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
                          "GRANT pg_write_all_data TO '{{name}}';"
                         ]
@@ -31,9 +29,10 @@ resource "vault_database_secret_backend_role" "rw-role" {
 
 # Create a read-only role
 resource "vault_database_secret_backend_role" "role" {
+  count= var.db-count
   backend             = "database/postgres-{$var.prefix}-${var.environment}" 
   name                = "ro"
-  db_name             = vault_database_secret_backend_connection.postgres.name
+  db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
                          "GRANT pg_read_all_data to '{{name}}';"
                         ]
@@ -42,6 +41,7 @@ resource "vault_database_secret_backend_role" "role" {
 
 # set up roles so that boundary can generate secrets
 resource "vault_policy" "read-write" {
+  count = var.db-count
   name = "read-postgres-${var.prefix}-${var.environment}"
 
   policy = <<EOT

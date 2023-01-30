@@ -98,3 +98,6 @@ variable "TF_WORKSPACE_PWD" {
 #  default = ""
 #}
 
+variable "db-count"{
+  default =0
+}
