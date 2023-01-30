@@ -24,6 +24,11 @@ output "rds-url"{
   sensitive=true
 }
 
+output "policy-set"{
+  value = concat (["general-token-policy"], vault_policy.read-write[*].name)
+}
+
+
 #output "test"{
 #  value=formatlist("cidr:%s/32", aws_eip.hashicat.*.public_ip)
 #}
