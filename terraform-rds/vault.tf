@@ -1,10 +1,18 @@
 ## Vault configuration
+resource "vault_namespace" "namespace"{
+  path = "terraform-demos/${var.prefix}-${var.environment}"
+}
+
+resource "vault_mount" "database" {
+  path      = "${var.prefix}-${var.environment}/database"
+  type      = "database"
+}
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
  count = var.db-count
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
-  backend       = "database"
+  backend       = "{vault_mount.database.path}"
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
 
@@ -21,7 +29,8 @@ resource "vault_database_secret_backend_connection" "postgres" {
 resource "vault_database_secret_backend_role" "rw-role" {
   count               = var.db-count
 # backend             = "database/postgres-${var.prefix}-${var.environment}"
-  backend             = "database"
+#  backend             = "database"
+  backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "rw-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
