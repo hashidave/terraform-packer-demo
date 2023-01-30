@@ -35,7 +35,7 @@ resource "vault_database_secret_backend_role" "role" {
   name                = "ro-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
-                         "GRANT pg_read_all_data to \"{{name}}/";"
+                         "GRANT pg_read_all_data to \"{{name}}\";"
                           ]
   default_ttl         = 3600
 }
