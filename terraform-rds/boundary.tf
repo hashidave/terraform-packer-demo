@@ -224,6 +224,7 @@ resource "boundary_worker" "private-worker"{
     tags = {
       Type="Boundary_Worker",
       Name = "${var.prefix}-BoundaryWorker",
+      Environment = var.environment
     }
 
   }
