@@ -1,6 +1,6 @@
 ## Vault configuration
 resource "vault_mount" "database" {
-  namespace = "terraform-demos"
+  namespace = "admin/terraform-demos"
   path      = "${var.prefix}-${var.environment}/database"
   type      = "database"
 }
