@@ -1,7 +1,10 @@
-output "hcp_boundary_worker_ip" {
+output "hcp_boundary_worker_ip_from_boundary" {
   value = boundary_worker.private-worker.address
 }
 
+output "hcp_boundary_worker_ip_from_ec2" {
+  value = aws_eip.boundary-worker.public_ip
+}
 
 ##########################################
 # for debugging only. turn this off...
