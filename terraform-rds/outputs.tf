@@ -1,30 +1,23 @@
+output "hcp_boundary_worker_ip" {
+  value = boundary_worker.private-worker.address
+}
 
-#output "controller_token" { 
-#  value =boundary_worker.private-worker.controller_generated_activation_token
+
+##########################################
+# for debugging only. turn this off...
+#output "random-password"{
+# value=random_password.pg-password.result
+# sensitive=true
+#}
+
+#output "boundary-vault-token"{
+# value= vault_token.boundary_vault_token.client_token
+# sensitive=true
 #}
 
 #output "boundary_worker_ec2_ip" {
 #  value = aws_eip.boundary-worker.public_ip
 #}
-
-#output "hcp_boundary_worker_ip" {
-#  value = boundary_worker.private-worker.address
-#}
-
-
-##########################################
-# for debugging only. turn this off...
-output "random-password"{
- value=random_password.pg-password.result
- sensitive=true
-}
-
-output "boundary-vault-token"{
- value= vault_token.boundary_vault_token.client_token
- sensitive=true
-}
-
-
 
 ########################################
 
