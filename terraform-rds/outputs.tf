@@ -19,7 +19,7 @@ output "random-password"{
  sensitive=true
 }
 
-output "boundary-vault-token{
+output "boundary-vault-token"{
  value= vault_token.boundary_vault_token.client_token
  sensitive=true
 }
