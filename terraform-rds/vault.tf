@@ -1,9 +1,8 @@
 ## Vault configuration
-#resource "vault_mount" "database" {
-#  namespace = "admin/terraform-demos"
-#  path      = "admin/terraform-demos"
-#  type      = "database"
-#}
+resource "vault_mount" "database" {
+  path      = "database"
+  type      = "database"
+}
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
