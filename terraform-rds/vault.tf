@@ -7,7 +7,8 @@ resource "vault_mount" "database" {
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
- count = var.db-count
+  count = var.db-count
+  namespace      = "admin/terraform"
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
   backend       = vault_mount.database.path
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
