@@ -8,9 +8,9 @@
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
   count = var.db-count
-  #namespace      = "admin/terraform"
+  namespace      = "admin/terraform"
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
-  backend       = "admin/terraform-demos/database"
+  backend       = "database"
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
 
