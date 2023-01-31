@@ -7,9 +7,7 @@ resource "vault_mount" "database" {
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
   count = var.db-count
-  #namespace      = "admin/terraform-demos"
-  #backend       = "database/postgres-${var.prefix}-${var.environment}"
-  backend       = "database"
+  backend       = vault_mount.database.path
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
 
@@ -25,8 +23,6 @@ resource "vault_database_secret_backend_connection" "postgres" {
 # Create a read-write role
 resource "vault_database_secret_backend_role" "rw-role" {
   count               = var.db-count
-# backend             = "database/postgres-${var.prefix}-${var.environment}"
-#  backend             = "database"
   backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "rw-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
@@ -40,8 +36,6 @@ resource "vault_database_secret_backend_role" "rw-role" {
 # Create a read-only role
 resource "vault_database_secret_backend_role" "role" {
   count= var.db-count
-#  backend             = "database/postgres-${var.prefix}-${var.environment}" 
-#  backend             = "database"
   backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "ro-${count.index}"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
@@ -51,7 +45,7 @@ resource "vault_database_secret_backend_role" "role" {
   default_ttl         = 3600
 }
 
-/*
+
 # set up roles so that boundary can generate secrets
 resource "vault_policy" "read-write" {
   count = var.db-count
@@ -77,4 +71,4 @@ resource "vault_token" "boundary_vault_token"{
   policies= concat (["general-token-policy"], vault_policy.read-write[*].name)
 
 }
-*/
+
