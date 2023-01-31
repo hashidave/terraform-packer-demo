@@ -44,7 +44,6 @@ resource boundary_host_static rds_host{
 #######################################
 ############ Credential Info ##########
 #######################################
-/*
 resource "boundary_credential_store_vault" "vault-store-rds" {
   name        = "vault-store-rds-${var.environment}"
   description = "Demo connection to my HCP Vault for ${var.environment}"
@@ -74,13 +73,11 @@ resource "boundary_credential_library_vault" "vault-library-readonly" {
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
-*/
 
 
 ####################################
 ######  The targets   ##############
 ####################################
-/*
 resource "boundary_target" "rds-readwrite" {
   name         = "rds-readwrite-${var.environment}"
   count        = var.db-count
@@ -116,7 +113,7 @@ resource "boundary_target" "rds-readonly" {
   
   worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
 }
-*/
+
 ####################################
 ######  Test Users    ##############
 ####################################
