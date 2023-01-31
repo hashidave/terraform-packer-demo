@@ -12,11 +12,21 @@
 #}
 
 
+##########################################
 # for debugging only. turn this off...
 output "random-password"{
  value=random_password.pg-password.result
  sensitive=true
 }
+
+output "boundary-vault-token{
+ value= vault_token.boundary_vault_token.client_token
+ sensitive=true
+}
+
+
+
+########################################
 
 
 output "rds-url"{
