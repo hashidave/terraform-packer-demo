@@ -64,7 +64,7 @@ EOT
 
 # Create a vault token to hand off to boundary
 resource "vault_token" "boundary_vault_token"{
-  namespace         = "/admin/terraform-demos"
+  namespace         = "admin/terraform-demos"
   period            = "168h"
   no_default_policy = true
   no_parent         = true
