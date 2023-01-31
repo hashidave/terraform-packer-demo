@@ -64,9 +64,10 @@ EOT
 
 # Create a vault token to hand off to boundary
 resource "vault_token" "boundary_vault_token"{
-  period="168h"
+  namespace         = "/admin/terraform-demos"
+  period            = "168h"
   no_default_policy = true
-  no_parent = true
+  no_parent         = true
     #give it all the policies that we created above plus the general one
   policies= concat (["general-token-policy"], vault_policy.read-write[*].name)
 
