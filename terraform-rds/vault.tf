@@ -52,10 +52,10 @@ resource "vault_policy" "read-write" {
   name = "read-postgres-${var.prefix}-${var.environment}-${count.index}"
 
   policy = <<EOT
-path "${vault_mount.database.path}/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/ro" {
+path "${vault_mount.database.path}/postgres/postgres-${var.prefix}-${var.environment}-${count.index}/ro" {
   capabilities = ["read"]
 }
-path "/${vault_mount.database.path}/postgres/postgres-{$var.prefix}-${var.environment}-${count.index}/rw" {
+path "/${vault_mount.database.path}/postgres/postgres-${var.prefix}-${var.environment}-${count.index}/rw" {
   capabilities = ["read"]
 }
 
