@@ -48,10 +48,9 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
   name        = "vault-store-rds-${var.environment}"
   description = "Demo connection to my HCP Vault for ${var.environment}"
   address     = var.vault-cluster
-#  token       = var.BOUNDARY_VAULT_TOKEN
   token       = vault_token.boundary_vault_token.client_token
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
-  namespace   = "admin"
+  namespace   = "admin/terraform-demos"
 }
 
 ### Cred library for a dynamic secret from a read-write role
