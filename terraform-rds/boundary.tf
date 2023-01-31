@@ -37,7 +37,8 @@ resource boundary_host_static rds_host{
   name = "db1"
   #description     = "rds database ${aws_db_instance.db-instance.name}"
   address         = aws_db_instance.db-instance.address
-  host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
+  #host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
+  host_catalog_id = boundary_host_set_static.rds_host_set.id
 }
 
 
