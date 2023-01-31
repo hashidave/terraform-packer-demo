@@ -1,16 +1,16 @@
 ## Vault configuration
-resource "vault_mount" "database" {
-  namespace = "admin/terraform-demos"
-  path      = "${var.prefix}-${var.environment}/database"
-  type      = "database"
-}
+#resource "vault_mount" "database" {
+#  namespace = "admin/terraform-demos"
+#  path      = "admin/terraform-demos"
+#  type      = "database"
+#}
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
   count = var.db-count
   #namespace      = "admin/terraform"
   #backend       = "database/postgres-${var.prefix}-${var.environment}"
-  backend       = vault_mount.database.path
+  backend       = "admin/terraform-demos/database"
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
   allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
 
@@ -52,6 +52,7 @@ resource "vault_database_secret_backend_role" "role" {
   default_ttl         = 3600
 }
 
+/*
 # set up roles so that boundary can generate secrets
 resource "vault_policy" "read-write" {
   count = var.db-count
@@ -68,7 +69,6 @@ path "/${vault_mount.database.path}/postgres/postgres-{$var.prefix}-${var.enviro
 EOT
 }
 
-
 # Create a vault token to hand off to boundary
 resource "vault_token" "boundary_vault_token"{
   period="168h"
@@ -78,3 +78,4 @@ resource "vault_token" "boundary_vault_token"{
   policies= concat (["general-token-policy"], vault_policy.read-write[*].name)
 
 }
+*/

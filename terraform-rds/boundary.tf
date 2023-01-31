@@ -44,6 +44,7 @@ resource boundary_host_static rds_host{
 #######################################
 ############ Credential Info ##########
 #######################################
+/*
 resource "boundary_credential_store_vault" "vault-store-rds" {
   name        = "vault-store-rds-${var.environment}"
   description = "Demo connection to my HCP Vault for ${var.environment}"
@@ -53,7 +54,6 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   namespace   = "admin"
 }
-
 
 ### Cred library for a dynamic secret from a read-write role
 resource "boundary_credential_library_vault" "vault-library-readwrite" {
@@ -74,14 +74,16 @@ resource "boundary_credential_library_vault" "vault-library-readonly" {
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
   http_method         = "GET"
 }
-
+*/
 
 
 ####################################
 ######  The targets   ##############
 ####################################
+/*
 resource "boundary_target" "rds-readwrite" {
   name         = "rds-readwrite-${var.environment}"
+  count        = var.db-count
   description  = "rds target with read-write creds injected"
   type         = "tcp"
   default_port = "22"
@@ -114,7 +116,7 @@ resource "boundary_target" "rds-readonly" {
   
   worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
 }
-
+*/
 ####################################
 ######  Test Users    ##############
 ####################################
@@ -158,14 +160,30 @@ resource "boundary_user" "mr-readwrite" {
 ####################################
 ######  Test Roles    ##############
 ####################################
+resource "boundary_role" "readonly" {
+  name          = "${var.prefix}-${var.environment}-readonly"
+  count         = var.db-count
+  description   = "A readonly role"
+  principal_ids = [boundary_user.mr-readonly.id]
+  grant_strings = ["id={boundar_target.rds_readonly[count.index].id};type=*;actions=read"]
+  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+}
 
+resource "boundary_role" "readwrite" {
+  name          = "${var.prefix}-${var.environment}-readwrite"
+  count         = var.db-count
+  description   = "A readwrite role"
+  principal_ids = [boundary_user.mr-readwrite.id]
+  grant_strings = ["id={boundar_target.rds_readwrite.id};type=*;actions=read"]
+  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+}
 
 
 #################################################################################################################
 ####  The self-managed worker                                                                               #####
 # This is non-trivial to deploy.  First you need an HCP boundary_worker object                              ##### 
 # which will generate a token that has to be passed into the ec2 instance and injected into a config file   #####
-# Currently this is being done with a remote-exec provisioner but plan is to                                #####   
+# Currently this is being done with a remote-exec provisioner but plan is to                                #####  
 # use AWS user-data when the ec2 is provisioned to pass that along.                                         ##### 
 # ###############################################################################################################
 

@@ -3,4 +3,4 @@
 #vault token create   -no-default-policy=true   -policy="general-token-policy"  -orphan=true   -period=168h   -renewable=true   -field=token
 
 echo "This is the token to give to terraform in the VAULT_TOKEN env var"
-vault token create   -no-default-policy=true   -policy="general-token-policy" -policy="tf-create-token" -policy="create-db-mount" -orphan=true   -period=168h   -renewable=true   -field=token
+vault token create   -no-default-policy=true   -policy="general-token-policy" -policy="tf-create-token" -policy="terraform-demos" -orphan=true   -period=168h   -renewable=true   -field=token -namespace="terraform-demos"
