@@ -61,7 +61,7 @@ resource "boundary_credential_library_vault" "vault-library-readwrite" {
   description         = "HCP Vault credential library for read-write creds in ${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
-  path                = "database/${vault_database_secret_backend_role.rw-role[count.index].name}"
+  path                = "database/creds/${vault_database_secret_backend_role.rw-role[count.index].name}"
   http_method         = "GET"
 }
 
