@@ -4,12 +4,16 @@ resource "vault_mount" "database" {
   type      = "database"
 }
 
+
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
   count = var.db-count
   backend       = vault_mount.database.path
   name          = "postgres-${var.prefix}-${var.environment}-${count.index}"
-  allowed_roles = ["rw-${count.index}", "ro-${count.index}"]
+  allowed_roles = [
+        "postgres-${var.prefix}-${var.environment}-${count.index}-ro",
+        "postgres-${var.prefix}-${var.environment}-${count.index}-rw"
+  ]              
 
   postgresql {
     connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/postgres"
