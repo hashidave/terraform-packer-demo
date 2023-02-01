@@ -1,12 +1,6 @@
 #
 #  a Postgres RDS Instance
 #
-
-# get info from Vault
-#data "vault_generic_secret" "postgres-pw" {
-#  path = "ssh/roles/RandomPassword"
-#}
-
 # Generate a random password for RDS (this will be handed off
 # to Vault to create a connection & we won't need to see it again
 resource "random_password" "pg-password" {
