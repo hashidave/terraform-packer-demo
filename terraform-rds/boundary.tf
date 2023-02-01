@@ -241,7 +241,8 @@ resource "boundary_worker" "private-worker"{
   # when the cloud provisions the instance
   resource "null_resource" "worker-provisioner" {
     triggers={
-      worker-id=aws_instance.boundary-worker.id,
+      aws-worker-id=aws_instance.boundary-worker.id,
+      boundary-worker-id=boundary_worker.private-worker.id,
       worker-ip=aws_eip.boundary-worker.public_ip
     }
        
