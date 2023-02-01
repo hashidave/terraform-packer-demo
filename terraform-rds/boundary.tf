@@ -56,11 +56,12 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
 
 ### Cred library for a dynamic secret from a read-write role
 resource "boundary_credential_library_vault" "vault-library-readwrite" {
-  name                = "hcp-vault-library-readwrite-${var.environment}"
-  description         = "HCP Vault credential library for read-write creds in ${var.environment}"
+  count               = var.db-count
+  name                = "hcp-vault-library-readwrite-${var.environment}-${count.index}"
+  description         = "HCP Vault credential library for read-write creds in ${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
-  path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
+  path                = "database/${vault_database_secret_backend_role.rw-role[count.index].name}"
   http_method         = "GET"
 }
 
@@ -90,7 +91,7 @@ resource "boundary_target" "rds-readwrite" {
   ]
   
   brokered_credential_source_ids = [
-    boundary_credential_library_vault.vault-library-readwrite.id
+    boundary_credential_library_vault.vault-library-readwrite[count.index].id
   
   ]
   
@@ -100,6 +101,7 @@ resource "boundary_target" "rds-readwrite" {
 resource "boundary_target" "rds-readonly" {
   name         = "rds-readonly-${var.environment}"
   description  = "rds target with read-only creds injected"
+  count        = var.db-count
   type         = "tcp"
   default_port = "5432"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
@@ -108,7 +110,7 @@ resource "boundary_target" "rds-readonly" {
   ]
   
   brokered_credential_source_ids = [
-    boundary_credential_library_vault.vault-library-readonly.id
+    boundary_credential_library_vault.vault-library-readonly[count.index].id
   ]
   
   worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
