@@ -36,7 +36,7 @@ resource "vault_database_secret_backend_role" "rw-role" {
 # Create a read-only role
 resource "vault_database_secret_backend_role" "role" {
   count= var.db-count
-  backend             = vault_database_secret_backend_connection.postgres[count.index].backendA
+  backend             = vault_database_secret_backend_connection.postgres[count.index].backend
   name                = "${vault_database_secret_backend_connection.postgres[count.index].name}-ro"
   db_name             = vault_database_secret_backend_connection.postgres[count.index].name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
