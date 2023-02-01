@@ -68,7 +68,8 @@ resource "boundary_credential_library_vault" "vault-library-readwrite" {
 ### Cred library for a dynamic secret from a read-only role
 resource "boundary_credential_library_vault" "vault-library-readonly" {
   name                = "hcp-vault-library-readonly-${var.environment}"
-  description         = "HCP Vault credential library for read-only creds in ${var.environment}"
+  count               = var.db-count
+  description         = "HCP Vault credential library for read-only creds in ${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
   path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
