@@ -15,7 +15,8 @@ resource "vault_database_secret_backend_connection" "postgres" {
         "postgres-${var.prefix}-${var.environment}-${count.index}-rw"
   ]              
 
-  postgresql {
+  
+ postgresql {
     connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance.address}:${aws_db_instance.db-instance.port}/postgres"
   }
 
