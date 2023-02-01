@@ -104,9 +104,9 @@ build {
      destination = "/home/ubuntu/deploy-worker.sh"
   }
 
-  provisioner "shell" {
-     inline = ["bash /home/ubuntu/deploy-worker.sh"                                     
-
-     ]
-    }
+  #provisioner "shell" {
+  #   inline = ["bash /home/ubuntu/deploy-worker.sh"                                     
+  #
+  #   ]
+  #  }
 }
