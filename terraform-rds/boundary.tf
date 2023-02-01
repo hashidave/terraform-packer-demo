@@ -260,6 +260,8 @@ resource "boundary_worker" "private-worker"{
      #Boundary info & restart the boundary-worker service
      provisioner "remote-exec" {
        inline=[
+         "sudo sed service boundary stop",
+         "sudo sed /home/ubuntu/provision-worker.sh",
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/boundary.hcl",
 	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/boundary.hcl",
