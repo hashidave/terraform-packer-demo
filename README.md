@@ -119,6 +119,6 @@ additional requirements.
 # packer-terraform-demo
 # terraform-packer-demo
 
-#Special Thanks
+# Special Thanks
 Eric Reeves who pioneered Packer templates for TOLA and gave me a repo with the underpinnings of the packer/tf integration
 Nico Kabar who lent his insight and experience to this projet & who got me off high-center a few times.  
