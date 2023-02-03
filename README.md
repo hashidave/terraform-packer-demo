@@ -1,6 +1,7 @@
 ## Infrastructure Workflow Demo
 This repo demonstrates golden image workflows with remote access and shows off
-HCP Packer, HCP Vault, TFCB, and HCP Boundary 
+HCP Packer, HCP Vault, TFCB, and HCP Boundary
+HCP Boundary has a couple of environments: ssh and rds connections 
 Emphasis is on how the products work together
 
 There is a lot of stuff in here, different environments, etc.  The only environment that fully works today is AWS
@@ -8,21 +9,26 @@ There is a lot of stuff in here, different environments, etc.  The only environm
 ### Top-Level Folder Structure
 packer-aws - Packer build in AWS for a base ubuntu image, a web-app image, and an HCP Boundary worker image.
 
-packer-gcp - do not use at this time.  
+packer-gcp - DO NOT USE.  NOT STABLE.
 
 packer-win-aws - builds a Windows image for AWS.  Slated to be moved out of this repo.  
 terraform-aws-base-testing - test harness.  deploys just a base AWS ubuntu image for dev purposes
 
 terraform-aws-webapp-testing - test harness.  deploys just the AWS webapp server image for dev purposes
 
-terraform-aws - deploys the current 
+terraform-aws - deploys some webservers along with a boundary worker
+terraform-rds - Deploys an rds environment instead of ec2 instances
 
 ### Branches
 - Dev - Development work.  May not be stable at any given moment
 - Prod - Stable codebase for running demos
 
-### Pre-Requisites
+### Generic Pre-Requisites
+Generally speaking, these items need to be configured for all of the demo projects.
+The terraform-xxx projects will have specific requirements listed in their README.md files
+
 - Create an HCP account
+  - Set your HCP_ORGANIZATION, HCP_CLIENT_ID, HCP_CLIENT_SECRET, and HCP_PROJECT_ID local environment vars.
   - Create an HCP Vault cluster
   - Create an HCP Boundary cluster
   - Create an HCP packer registry
@@ -55,10 +61,24 @@ Set up HCP Boundary items
   - TF_VAR_TF_WORKSPACE_PWD
 - Create an HCP-Packer Run Task in your Terraform Cloud Organization
   - Retrieve the "Endpoint URL" and "HMAC Key" from the HCP Packer / "Integrate with Terraform Cloud" page under portal.cloud.hashicorp.com
+  - An AWS KeyPair.  save the private key
+### Configure Vault
+Create these paths:
+   kv/GoldenImage-dev (or -prod or whatever your environment is called)
+     - private_key - the private key from the ssh keypair created above
+   kv/GoldenImage-UserPW-dev (same note applies)
+     - username - name of your choice
+     - password - password of your choice
+    kv/ubuntu-user
+      - password - put a reasonably unpleasant password in here.  This will be used by Packer to do some 
+                   image creation things.  
+
 
 ### Packer
-Inside the packer-aws folder 
+Inside the packer-aws folder are templates to build the images you'll need in these environments
+Go ahead & build them all now.  :)
 
+- replace the files/authorized_keys with the public key that goes with the keypair you created above
 - packer init .
 - packer fmt .
 - Build the base AWS image
@@ -71,31 +91,34 @@ Inside the packer-aws folder
   - HCP_PACKER_BUILD_FINGERPRINT="$(date +%s)" packer build 5-boundary-worker.pkr.hcl 
   - Assign the image to the "Dev" channel of the acme-webapp bucket
 - 
-- Assign image to "production" Channel
+
+### Configure Boundary
+Although the projects stand up most of their own boundary stuff, you'll need to get some basic 
+infrastructure created.  This repo will do that for you:  https://github.com/hashidave/boundary-dmr
+Someday I'll love you enough to make a repo that does all the other stuff too. 
+After you deploy it, don't forget that the other repos use the remote state of this one to figure out the Boundary project that they're supposed to deploy into so you'll need to enable state sharing with the other repos.
 
 ### Terraform
-
-- Edit terraform/terraform.tf and populate the Organization and Workspace names
+These apply to all the projects.  Again... see the project-specific readme for 
+additional requirements.
+- Tags are used to determine the terraform repo to use.  Specific tag info is documented in each project
+- Ensure that the credentials Variable Set, created above, is assigned to the workspace
+- Assign an HCP Packer Run Task to Workspace
 - terraform init
-- Assign the credentials Variable Set to the workspace, unless you created the Variable Set as organization-wide
-- Assign HCP Packer Run Task to Workspace
 - terraform plan
 - terraform apply
 
-### Revoke Image
-- Revoke acme-webapp Iteration
-- terraform plan
-- terraform apply
 
-### Update Image
-- HCP_PACKER_BUILD_FINGERPRINT="$(date +%s)" packer build 3-acme-base.pkr.hcl
-- Assign image to "development" channel
-- HCP_PACKER_BUILD_FINGERPRINT="$(date +%s)" packer build 4-acme-webapp.pkr.hcl
-- Assign image to "development" channel
-- Modify terraform/web_app.tf, point to "development"
-- terraform apply
+
+
+
+
 
 ### Various repositories were borrowed from to construct this demo.
 - https://github.com/brokedba/terraform-examples
 # packer-terraform-demo
 # terraform-packer-demo
+
+#Special Thanks
+Eric Reeves who pioneered Packer templates for TOLA and gave me a repo with the underpinnings of the packer/tf integration
+Nico Kabar who lent his insight and experience to this projet & who got me off high-center a few times.  

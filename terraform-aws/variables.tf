@@ -82,9 +82,9 @@ variable "boundary-cluster-id"{
 #  default="p_t0BBolQK8o"
 #}
 
-variable login_approle_role_id {
-  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
-} 
+#variable login_approle_role_id {
+#  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
+#} 
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"

@@ -26,17 +26,19 @@ resource "boundary_host_set_static" "rds_host_set" {
   type            = "static"
   # The host catalog comes from an external state for our general boundary environment
   host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
+  host_ids = boundary_host_static.rds_host[*].id
 }
 
 ##########################################################################
 #### Create host object & load the RDS instances into the host set   ##### 
 ##########################################################################
 resource boundary_host_static rds_host{
+  count           = var.db-count
   type            = "static"
-  #name            = aws_db_instance.db-instance.name
-  name = "db1"
+  name            = aws_db_instance.db-instance[count.index].name
+  #name = "db1"
   #description     = "rds database ${aws_db_instance.db-instance.name}"
-  address         = aws_db_instance.db-instance.address
+  address         = aws_db_instance.db-instance[count.index].address
   host_catalog_id = boundary_host_catalog_static.rds_host_catalog.id
   #host_catalog_id = boundary_host_set_static.rds_host_set.id
 }
@@ -61,18 +63,18 @@ resource "boundary_credential_library_vault" "vault-library-readwrite" {
   description         = "HCP Vault credential library for read-write creds in ${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
-  path                = "database/creds/${vault_database_secret_backend_role.rw-role[count.index].name}"
+  path                = "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.rw-role[count.index].name}"
   http_method         = "GET"
 }
 
 ### Cred library for a dynamic secret from a read-only role
 resource "boundary_credential_library_vault" "vault-library-readonly" {
-  name                = "hcp-vault-library-readonly-${var.environment}"
+  name                = "hcp-vault-library-readonly-${var.environment}-${count.index}"
   count               = var.db-count
   description         = "HCP Vault credential library for read-only creds in ${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
-  path                = "kv/data/GoldenImage${var.environment}" # change to Vault backend path
+  path                = "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.ro-role[count.index].name}"
   http_method         = "GET"
 }
 
@@ -81,11 +83,11 @@ resource "boundary_credential_library_vault" "vault-library-readonly" {
 ######  The targets   ##############
 ####################################
 resource "boundary_target" "rds-readwrite" {
-  name         = "rds-readwrite-${var.environment}"
+  name         = "rds-readwrite-${var.environment}-${count.index}"
   count        = var.db-count
-  description  = "rds target with read-write creds injected"
+  description  = "rds target with read-write creds brokered"
   type         = "tcp"
-  default_port = "22"
+  default_port = "5432"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   host_source_ids = [
     boundary_host_set_static.rds_host_set.id
@@ -100,8 +102,8 @@ resource "boundary_target" "rds-readwrite" {
 }
 
 resource "boundary_target" "rds-readonly" {
-  name         = "rds-readonly-${var.environment}"
-  description  = "rds target with read-only creds injected"
+  name         = "rds-readonly-${var.environment}-${count.index}"
+  description  = "rds target with read-only creds brokered"
   count        = var.db-count
   type         = "tcp"
   default_port = "5432"
@@ -130,6 +132,7 @@ resource "boundary_account_password" "mr-readonly" {
   auth_method_id = boundary_auth_method_password.auth-method-pw.id
   type           = "password"
   login_name     = "mr-readonly-${var.environment}"
+  name           = "mr-readonly-${var.environment}"
   password       = "$uper$ecure"
 }
 
@@ -144,6 +147,7 @@ resource "boundary_account_password" "mr-readwrite"{
   auth_method_id = boundary_auth_method_password.auth-method-pw.id
   type           = "password"
   login_name     = "mr-readwrite-${var.environment}"
+  name           = "mr-readwrite-${var.environment}"
   password       = "$uper$ecure"
 }
 
@@ -161,21 +165,23 @@ resource "boundary_user" "mr-readwrite" {
 ######  Test Roles    ##############
 ####################################
 resource "boundary_role" "readonly" {
-  name          = "${var.prefix}-${var.environment}-readonly"
+  name          = "${var.prefix}-${var.environment}-readonly-${count.index}"
   count         = var.db-count
   description   = "A readonly role"
   principal_ids = [boundary_user.mr-readonly.id]
-  grant_strings = ["id={boundar_target.rds_readonly[count.index].id};type=*;actions=read"]
+  grant_strings = ["id=${boundary_target.rds-readonly[count.index].id};actions=read,authorize-session"]
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  grant_scope_id= data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
 }
 
 resource "boundary_role" "readwrite" {
-  name          = "${var.prefix}-${var.environment}-readwrite"
+  name          = "${var.prefix}-${var.environment}-readwrite-${count.index}"
   count         = var.db-count
   description   = "A readwrite role"
   principal_ids = [boundary_user.mr-readwrite.id]
-  grant_strings = ["id={boundar_target.rds_readwrite.id};type=*;actions=read"]
+  grant_strings = ["id=${boundary_target.rds-readwrite[count.index].id};actions=read,authorize-session"]
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  grant_scope_id= data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
 }
 
 

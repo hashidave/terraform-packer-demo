@@ -32,12 +32,13 @@ variable "VAULT_TOKEN" {
   default=""
 }
 
-# This is the token we hand off to boundary for future use.
-# in a future rev we'll make this dynamically generated in the run & get rid of this.
-variable "BOUNDARY_VAULT_TOKEN" {
-  default=""
+variable "vault_namespace"{
+  default= "admin/terraform-demos"
 }
 
+variable "vault_db_mount"{
+  default= "rds-demo-db"
+}
 
 variable "address_space" {
   description = "The address space that is used by the virtual network. You can supply more than one address space. Changing this forces a new resource to be created."
@@ -85,19 +86,16 @@ variable "boundary-cluster-id"{
   default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
 }
 
-#variable login_approle_role_id {
-#  default="52d0945b-e373-bd3f-49bf-2ba5b84b548e"
-#} 
+variable boundary_auth_method_id{
+  default ="ampw_Sce2pnCbl2"
+}
 
 variable "TF_WORKSPACE_PWD" {
  description = "boundary user password"
  default     = ""
 }
 
-#variable "ubuntu_password" {
-#  default = ""
-#}
 
 variable "db-count"{
-  default =1
+  default = 2
 }

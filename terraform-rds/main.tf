@@ -18,7 +18,7 @@ provider "aws" {
 # My HCP Boundary instance
 provider "boundary" {
   addr                            = var.boundary-address
-  auth_method_id                  = "ampw_Sce2pnCbl2"
+  auth_method_id                  = var.boundary_auth_method_id
   password_auth_method_login_name = "tf-workspace"
   password_auth_method_password   = var.TF_WORKSPACE_PWD
 }
@@ -26,7 +26,7 @@ provider "boundary" {
 provider "vault"{
   address = var.vault-cluster
   token=var.VAULT_TOKEN
-  namespace = "admin/terraform-demos"
+  namespace = var.vault_namespace 
 }
 
 # So we can provision our stuffs
