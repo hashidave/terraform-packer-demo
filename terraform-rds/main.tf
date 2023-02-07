@@ -24,8 +24,6 @@ provider "boundary" {
 }
 
 provider "vault"{
-  address = var.vault-cluster
-  token=var.VAULT_TOKEN
   namespace = var.vault_namespace 
 }
 
