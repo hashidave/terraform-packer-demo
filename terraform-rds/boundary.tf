@@ -6,6 +6,7 @@ data "tfe_outputs" "Boundary" {
   workspace = "Boundary-Environment-dev"
 }
 
+
 ##########################################################################
 ####  Provision a static host catalog into the project               ##### 
 ##########################################################################
@@ -50,7 +51,8 @@ resource boundary_host_static rds_host{
 resource "boundary_credential_store_vault" "vault-store-rds" {
   name        = "vault-store-rds-${var.environment}"
   description = "Demo connection to my HCP Vault for ${var.environment}"
-  address     = var.vault-cluster
+  #address     = var.vault-cluster
+  address     = var.VAULT_ADDR
   token       = vault_token.boundary_vault_token.client_token
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
   namespace   = "admin/terraform-demos"
