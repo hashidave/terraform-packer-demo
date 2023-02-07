@@ -21,19 +21,14 @@ variable "environment"{
   default = "dev"
 }
 
-
-variable "vault-cluster"{
-  default = "https://hashiDaveR-vault-cluster-public-vault-f886c6aa.441332cd.z1.hashicorp.cloud:8200"
+# We'll get this from the environment.  out bootstrapper will put it there
+variable "VAULT_ADDR"{
+  default = ""
 }
 
-
-# The main token that TF uses to obtain secrets
-variable "VAULT_TOKEN" {
-  default=""
-}
 
 variable "vault_namespace"{
-  default= "admin/terraform-demos"
+  default= "admin/terraform-workloads"
 }
 
 variable "vault_db_mount"{
