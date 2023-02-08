@@ -1,10 +1,3 @@
-##############################################################
-####   Get the project ID from the main boundary project  ####
-##############################################################
-data "tfe_outputs" "Boundary" {
-  organization = "hashi-DaveR"
-  workspace = "Boundary-Environment-dev"
-}
 
 
 ##########################################################################
