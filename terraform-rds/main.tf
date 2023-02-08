@@ -11,6 +11,7 @@ provider "aws" {
       Demo       = "BoundaryRDS"
       Environment = var.environment      
       Rep = "Tim"
+      Workspace = terraform.workspace
     }
   }  
 }
