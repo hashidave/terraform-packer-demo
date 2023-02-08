@@ -85,11 +85,6 @@ variable boundary_auth_method_id{
   default ="ampw_Sce2pnCbl2"
 }
 
-variable "TF_WORKSPACE_PWD" {
- description = "boundary user password"
- default     = ""
-}
-
 
 variable "db-count"{
   default = 2
