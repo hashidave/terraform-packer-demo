@@ -34,7 +34,7 @@ provider "boundary" {
 }
 
 provider "vault"{
-  namespace = var.vault_namespace 
+  #namespace = var.vault_namespace 
 }
 
 # So we can provision our stuffs
