@@ -48,7 +48,7 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
   address     = var.VAULT_ADDR
   token       = vault_token.boundary_vault_token.client_token
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
-  namespace   = "admin/terraform-demos"
+  namespace   = var.TFC_VAULT_NAMESPACE
 }
 
 ### Cred library for a dynamic secret from a read-write role
