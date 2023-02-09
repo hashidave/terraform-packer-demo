@@ -31,8 +31,8 @@ resource "boundary_host_set_plugin" "host_set" {
 resource "boundary_credential_store_vault" "vault-store" {
   name        = "vault-store-${var.prefix}-${var.environment}"
   description = "Demo connection to my HCP Vault for the ${var.prefix} ${var.environment} environment"
-  address     = var.vault-cluster
-  token       = var.vault-token 
+  address     = var.TFC_VAULT_ADDR
+  token       = var.VAULT_TOKEN
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
   namespace   = "admin"
 }
