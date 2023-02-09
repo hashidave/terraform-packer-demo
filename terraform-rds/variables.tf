@@ -27,8 +27,8 @@ variable "VAULT_ADDR"{
 }
 
 
-variable "vault_namespace"{
-  default= "admin/terraform-workloads"
+variable "TFC_VAULT_NAMESPACE"{
+  default= ""
 }
 
 variable "vault_db_mount"{
