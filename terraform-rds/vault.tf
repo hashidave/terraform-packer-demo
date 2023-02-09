@@ -1,7 +1,11 @@
 ## Vault configuration
 resource "vault_mount" "database" {
-  path      = var.vault_db_mount
+  path      = "${var.vault_db_mount}-${var.environment}"
   type      = "database"
+}
+
+locals{ 
+  connection-urls = "${formatlist("postgres://dmradmin:%s@%s:%s/postgres", random_password.pg-password.result, aws_db_instance.db-instance[*].address, aws_db_instance.db-instance[*].port)}"
 }
 
 # Create a DB Connection
@@ -13,10 +17,9 @@ resource "vault_database_secret_backend_connection" "postgres" {
         "postgres-${var.prefix}-${var.environment}-${count.index}-ro",
         "postgres-${var.prefix}-${var.environment}-${count.index}-rw"
   ]              
-
   
  postgresql {
-    connection_url = "postgres://dmradmin:${random_password.pg-password.result}@${aws_db_instance.db-instance[count.index].address}:${aws_db_instance.db-instance[count.index].port}/postgres"
+    connection_url = local.connection-urls[count.index]
   }
 
   depends_on=[
@@ -51,10 +54,11 @@ resource "vault_database_secret_backend_role" "ro-role" {
 }
 
 
+
 # set up roles so that boundary can generate secrets
-resource "vault_policy" "read-write" {
+resource "vault_policy" "read-write-postgres" {
   count = var.db-count
-  name = "read-postgres-${var.prefix}-${var.environment}-${count.index}"
+  name = "boundary-readwrite-postgres-${var.prefix}-${var.environment}-${count.index}"
 
   policy = <<EOT
 path "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.ro-role[count.index].name}" {
@@ -67,13 +71,44 @@ path "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.rw
 EOT
 }
 
+resource "vault_policy" "boundary_token_policy"{
+  count = var.db-count
+  name = "boundary-token-policy"
+  
+  policy= <<EOT
+      path "auth/token/lookup-self" {
+        capabilities = ["read"]
+      }
+      path "auth/token/renew-self" {
+        capabilities = ["update"]
+      }
+      path "auth/token/revoke-self" {
+        capabilities = ["update"]
+      }
+      path "auth/token/create" {
+        capabilities = ["create", "read", "update", "list"]
+      }
+      path "sys/leases/renew" {
+        capabilities = ["update"]
+      }
+      path "sys/leases/revoke" {
+        capabilities = ["update"]
+      }
+      path "sys/capabilities-self" {
+        capabilities = ["update"]
+      }
+    EOT  
+}
+
+
+
 # Create a vault token to hand off to boundary
 resource "vault_token" "boundary_vault_token"{
   period            = "168h"
-  no_default_policy = true
+  no_default_policy = false
   no_parent         = true
-    #give it all the policies that we created above plus the general one
-  policies= concat (["general-token-policy"], vault_policy.read-write[*].name)
-
+  #give it all the policies that we created above plus the general one
+  policies= concat (["boundary-token-policy"], vault_policy.read-write-postgres[*].name)
+  #policies = vault_policy.read-write[*].name
 }
 
