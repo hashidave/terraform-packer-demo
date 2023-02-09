@@ -24,14 +24,11 @@ output "hcp_boundary_worker_ip_from_ec2" {
 
 ########################################
 
-#locals{
-#  connection_string={
-#    count=var.db-count
-#    name="connection-string"
-#    value="foo"
-#    port="Bar"
-#  }
+#output "connection-urls" {
+#  value = local.connection-urls
+#  sensitive = true
 #}
+
 
 #output "rds-connection-string"{
 #  value=local.connection_string[*]
