@@ -31,30 +31,33 @@ resource "boundary_host_set_plugin" "host_set" {
 resource "boundary_credential_store_vault" "vault-store" {
   name        = "vault-store-${var.prefix}-${var.environment}"
   description = "Demo connection to my HCP Vault for the ${var.prefix} ${var.environment} environment"
-  address     = var.TFC_VAULT_ADDR
-  token       = var.VAULT_TOKEN
+  address     = var.VAULT_ADDR
+  token       = vault_token.boundary_vault_token.client_token
   scope_id    = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
-  namespace   = "admin"
+  namespace   = var.TFC_VAULT_NAMESPACE
 }
 
 
 ### Cred library for injected creds
+
 resource "boundary_credential_library_vault" "vault-library" {
   name                = "hcp-vault-library-${var.prefix}{-${var.environment}"
   description         = "HCP Vault credential library for ${var.environment}"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "ssh_private_key"
-  path                = "kv/data/GoldenImage-${var.environment}" # change to Vault backend path
+  path                = vault_kv_secret_v2.userdata.path
   http_method         = "GET"
 }
 
 ### Cred library for brokered creds
+### It's the same path as the library above but it will pull out the 
+### username/password combination instead
 resource "boundary_credential_library_vault" "vault-library-brokered" {
   name                = "hcp-vault-library-brokered ${var.prefix} ${var.environment}"
   description         = "HCP Vault credential library for brokered static creds for the ${var.prefix} ${var.environment} environment"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "username_password"
-  path                = "kv/data/GoldenImage-UserPW-${var.environment}" # change to Vault backend path
+  path                = vault_kv_secret_v2.userdata.path
   http_method         = "GET"
 }
 
@@ -190,7 +193,7 @@ resource "boundary_worker" "private-worker"{
 
          "sudo sed -i ''s/PROJECT_TAG_HERE/${var.prefix}/g'' /etc/boundary.d/boundary.hcl",
 
-	"sudo service boundary --full-restart"
+	       "sudo service boundary --full-restart"
        ]
      }
  }
