@@ -35,7 +35,7 @@ resource "aws_db_parameter_group" "BoundaryRDS" {
 resource "aws_db_instance" "db-instance" {
   count                  = var.db-count
   identifier             = "${var.prefix}-${var.environment}-${count.index}"
-  instance_class         = "db.t3.micro"
+  instance_class         = "db.t3.nano"
   #db_name                = "test"
   allocated_storage      = 5
   engine                 = "postgres"
