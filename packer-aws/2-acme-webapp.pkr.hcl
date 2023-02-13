@@ -24,6 +24,7 @@ variable "hcp_bucket_name" {
 
 # specify the channel name from whence to pull the base image.
 variable "base-image-channel"{
+  default = "production"
 }
 
 
