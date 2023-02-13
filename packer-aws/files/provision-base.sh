@@ -8,17 +8,7 @@ sudo apt -y update
 # Install base packages that we need in all builds
 #sudo apt -y -f install gpg
 
-# add our regular user account w/password from vault
-#sudo useradd -m -d /home/dave -p $(echo ${var.UbuntuPassword} | openssl passwd -1 -stdin) dave
-sudo useradd -m -d /home/dave -p $(echo $UBUNTU_PASSWORD | openssl passwd -1 -stdin) dave
-
-sudo mkdir /home/dave/.ssh
-
-#Set dave up for key-based login
-sudo mv /home/ubuntu/authorized_keys /home/dave/.ssh/authorized_keys
-sudo chmod -R go= /home/dave/.ssh
-sudo chown -R dave.dave /home/dave
-
+sudo echo "$USER:$UBUNTU_PASSWORD" | sudo chpasswd
 
 #Enable password auth for ssh b/c this is a demo environment & we
 #might want to use it
