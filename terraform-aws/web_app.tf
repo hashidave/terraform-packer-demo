@@ -13,6 +13,8 @@ data "hcp_packer_image" "ubuntu_us_east_2" {
   region         = var.region
 }
 
+### NOTE: At the moment, this is the only set of hosts that will go
+### into boundary.  
 resource "aws_instance" "hashicat" {
   ami                         = data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
   instance_type               = var.instance_type
@@ -29,6 +31,21 @@ resource "aws_instance" "hashicat" {
     host-set= "${var.prefix}_AWS_${var.environment}"
   }
 
+  connection {
+    type     = "ssh"
+    user     = "ubuntu"
+    host     = self.public_ip 
+    port     = 22
+    private_key = var.ssh_private_key
+  }
+  ## Change the default user's password to whatever we just generated.
+  provisioner "remote-exec" {
+    inline=[
+      "sudo echo '${var.default_username}:${random_password.user-password.result}' | sudo chpasswd"
+    ]
+  }
+
+
 }
 
 resource "aws_eip" "hashicat" {
@@ -42,33 +59,6 @@ resource "aws_eip_association" "hashicat" {
   instance_id   = aws_instance.hashicat[count.index].id
   allocation_id = aws_eip.hashicat[count.index].id
 }
-
-#resource "tls_private_key" "hashicat" {
-#  algorithm = "RSA"
-#}
-
-#locals {
-#  private_key_filename = "${var.prefix}-ssh-key.pem"
-#  private_key_filename2 = "${var.prefix}-ssh-key2.pem"
-#}
-
-#resource "aws_key_pair" "hashicat" {
-#  key_name   = local.private_key_filename
-#  public_key = tls_private_key.hashicat.public_key_openssh
-#}
-
-
-# NOT USING THIS.  ddUSING DYNAMIC HOST SET
-# Add to the boundary host catalog for demos
-#resource "boundary_host_static" "test_host" {
-#  count 	  = var.server_count
-#  type            = "static"
-#  name            = "hashicat_test-${count.index}"
-#  description     = "My first host!"
-#  address         = aws_eip.hashicat[count.index].public_ip
-#  host_catalog_id = var.boundary_catalog_id
-#}
-
 
 
 resource "aws_instance" "hashicat2" {
