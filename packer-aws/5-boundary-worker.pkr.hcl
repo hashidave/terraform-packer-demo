@@ -28,6 +28,7 @@ variable "version" {
 
 #The channel from whence to pull the base image
 variable "base-image-channel" {
+  default= "production"
 }
 
 
@@ -104,9 +105,9 @@ build {
      destination = "/home/ubuntu/deploy-worker.sh"
   }
 
-  #provisioner "shell" {
-  #   inline = ["bash /home/ubuntu/deploy-worker.sh"                                     
-  #
-  #   ]
-  #  }
+  provisioner "shell" {
+     inline = ["bash /home/ubuntu/deploy-worker.sh"                                     
+  
+     ]
+    }
 }
