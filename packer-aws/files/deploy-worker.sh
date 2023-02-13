@@ -13,7 +13,7 @@ sudo apt-get update && sudo apt-get install boundary-worker-hcp
 
 # cleanup boundary service file
 sudo sed -i 's/boundary server/boundary-worker server/g' /usr/lib/systemd/system/boundary.service
-#sudo sed -i 's/... not sure what went here.../boundary/g' /usr/lib/systemd/system/boundary.service
+sudo sed -i 's/%i/boundary/g' /usr/lib/systemd/system/boundary.service
 sudo mkdir /opt/boundary
 sudo chown boundary:boundary /opt/boundary
 sudo chmod 2700 /opt/boundary
