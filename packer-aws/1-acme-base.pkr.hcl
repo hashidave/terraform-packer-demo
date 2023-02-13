@@ -25,6 +25,17 @@ variable "version" {
   default = "2.0.0"
 }
 
+variable "default_username"{
+  default="ubuntu"
+}
+
+variable default_user_password_path{
+  # Where in vault to get the initial password for our user.  
+  # Should contain a key called "password"
+  # The terraform-aws repo will reset this...
+  default="kv/data/ubuntu-user"
+}
+
 
 #--------------------------------------------------
 # AWS Image Config and Definition
@@ -45,15 +56,15 @@ data "amazon-ami" "aws_base" {
 source "amazon-ebs" "acme-base" {
   region         = var.aws_region
   source_ami     = data.amazon-ami.aws_base.id
-  instance_type  = "t2.micro"
+  instance_type  = "t2.nano"
   ssh_username   = "ubuntu"
   ssh_agent_auth = false
   ami_name       = "packer_aws_{{timestamp}}_${var.image_name}_v${var.version}"
 }
 
 # Vault Connection so we can get some secrets
-local "UbuntuPassword"{
-  expression =  vault ("kv/data/ubuntu-user", "password")
+local "UbuntuPassword" {
+  expression =  vault (var.default_user_password_path, "password")
   sensitive = true
 }
 
@@ -65,7 +76,7 @@ build {
 
   hcp_packer_registry {
     bucket_name = var.hcp_bucket_name
-    description = "Base Ubuntu Image for Dave's Factory" 
+    description = "Base Ubuntu Image for ${var.default_username}'s Factory" 
     
     bucket_labels = {
       "owner"          = "platform-team"
@@ -90,17 +101,9 @@ build {
     destination = "/home/ubuntu/provision-base.sh"
   }
 
-  # move the dave user public key
-  provisioner "file" {
-    source      = "files/authorized_keys"
-    destination = "/home/ubuntu/authorized_keys"
-  }
-
-
-
   provisioner "shell" {
     script= "files/provision-base.sh"
-    environment_vars= ["UBUNTU_PASSWORD=${local.UbuntuPassword}"]
-             
+    environment_vars= ["USER=${var.default_username}", "UBUNTU_PASSWORD=${local.UbuntuPassword}",]
+         
   }
 }
