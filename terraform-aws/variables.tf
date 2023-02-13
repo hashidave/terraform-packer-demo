@@ -55,8 +55,13 @@ variable "spot_instance_count" {
 # We should pull this from vault
 variable "ssh_private_key" {
   description = "the ssh private key for provisioner"
-  default     = ""
 }
+
+variable "default_username"{
+  description = "Don't change this unless you want to do a lot of work"
+  default     = "ubuntu"
+}
+
 
 variable "boundary-address"{
   default= "https://868bdfc7-61c6-4f31-b3a0-7bae78941aa0.boundary.hashicorp.cloud"
@@ -68,12 +73,18 @@ variable "boundary-cluster-id"{
 }
 
 
-variable "TF_WORKSPACE_PWD" {
- description = "boundary user password"
- default     = ""
+
+variable "VAULT_ADDR" {
+  description = "this gets populated from a workspace variable if you used the tfc workspace factory"
+ 
 }
 
-variable "ubuntu_password" {
-  default = ""
+variable "TFC_VAULT_NAMESPACE" {
+  description = "this gets populated from a workspace variable"
 }
+
+
+#variable "ubuntu_password" {
+#  
+#}
 
