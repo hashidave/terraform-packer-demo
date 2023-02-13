@@ -2,7 +2,8 @@
 This repo demonstrates golden image workflows with remote access and shows off
 HCP Packer, HCP Vault, TFCB, and HCP Boundary
 HCP Boundary has a couple of environments: ssh and rds connections 
-Emphasis is on how the products work together
+Emphasis is on how the products work together. 
+As of 2/9/23 the repo now relies on Terraform Dynamic Workspace Credentials so that's a cool feature, too
 
 There is a lot of stuff in here, different environments, etc.  The only environment that fully works today is AWS
 
@@ -32,7 +33,7 @@ The terraform-xxx projects will have specific requirements listed in their READM
   - Create an HCP Vault cluster
   - Create an HCP Boundary cluster
   - Create an HCP packer registry
-- Create or access an existing Terraform Cloud Organization with "Team & Governance Plan" features enabled.
+- Create or access an existing TFCB Organization with 
 - Create a Service Principal for the target Organization in portal.cloud.hashicorp.com, Access Control (IAM).
   - Capture the Client ID and Secret
 - AWS
@@ -42,12 +43,12 @@ The terraform-xxx projects will have specific requirements listed in their READM
     - Capture the Access Key ID and Secret.
 Set up HCP Boundary items
   - Create (or use) an avaialable project.
-  - Create a user in HCP boundary called "tf-workspace"
+  - Create a user in HCP boundary called "tf-workspace"  **save the password**
   - Create a role scoped to the project.  Map to the tf-workspace user with a grant string of id=*;type=*;actions=create,read,update,delete
 - GCP (DO NOT USE)
   - Create a Service Account user with the Editor role, generate key in JSON.
     - Capture the key
-- Create a Variable Set in Terraform Cloud containing the following Environment variables.  These will be used to drive the overall HCP and TF environment 
+- Create a Variable Set in Terraform Cloud containing the following Environment variables.  These will be used to drive the overall HCP and TF environment.  **Don't forget to apply this to any workspaces you create for this project.**
   - HCP_CLIENT_ID
   - HCP_CLIENT_SECRET (sensitive)
   - AWS User for TF Deployment
@@ -58,7 +59,6 @@ Set up HCP Boundary items
     - TF_VAR_TF_WORKSPACE_PWD  (set to the password of the "tf-workspace" user in HCP Boundary)
   - GCP (Not currently stable.  Do not use) 
     - GOOGLE_CREDENTIALAS (sensitive)
-  - TF_VAR_TF_WORKSPACE_PWD
 - Create an HCP-Packer Run Task in your Terraform Cloud Organization
   - Retrieve the "Endpoint URL" and "HMAC Key" from the HCP Packer / "Integrate with Terraform Cloud" page under portal.cloud.hashicorp.com
   - An AWS KeyPair.  save the private key
