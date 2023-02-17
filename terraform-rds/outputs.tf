@@ -1,3 +1,11 @@
+output "boundary_injected_connection_commands"{
+  value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readonly[*].id )
+}
+
+output "boundary_brokered_connection_commands"{
+  value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readwrite[*].id)
+}
+
 output "hcp_boundary_worker_ip_from_boundary" {
   value = boundary_worker.private-worker.address
 }
