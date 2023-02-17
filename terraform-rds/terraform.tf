@@ -11,6 +11,9 @@ terraform {
     vault = {
       #version = "~> 3.12.0"
     }
+    boundary ={
+      #version = "1.1.3"
+    }
   }
 
   cloud {
