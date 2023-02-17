@@ -20,6 +20,7 @@ provider "aws" {
 ##############################################################
 ####   Get the project ID from the main boundary project  ####
 ##############################################################
+#TODO:  Don't hardcode this.
 data "tfe_outputs" "Boundary" {
   organization = "hashi-DaveR"
   workspace = "Boundary-Environment-dev"
@@ -30,7 +31,7 @@ provider "boundary" {
   addr                            = var.boundary-address
   auth_method_id                  = var.boundary_auth_method_id
   password_auth_method_login_name = "tf-workspace"
-  password_auth_method_password   = data.tfe_outputs.Boundary.values.tf-workspace-pwd 
+  password_auth_method_password   = data.tfe_outputs.Boundary.values.tf-workspace-pwd
 }
 
 provider "vault"{
