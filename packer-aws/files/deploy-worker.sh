@@ -3,13 +3,10 @@
 #########
 ####  Gets the bits for boundary & writes a stub config file that will be altered 
 ####  when Terraform deploys the actual system
-
-
-#Get the boundary worker binary & install
-wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
-
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt-get update && sudo apt-get install boundary-worker-hcp
+
+sudo service boundary stop
+sudo rm -rf /opt/boundary
 
 # cleanup boundary service file
 sudo sed -i 's/boundary server/boundary-worker server/g' /usr/lib/systemd/system/boundary.service
@@ -19,7 +16,6 @@ sudo chown boundary:boundary /opt/boundary
 sudo chmod 2700 /opt/boundary
 sudo systemctl daemon-reload
 sudo systemctl enable boundary
-
 
 
 # Create a baseline config
@@ -47,6 +43,7 @@ worker {
 }
 EOF
 
+sudo chmod 755 ~/pki-worker.hcl
 sudo mv ~/pki-worker.hcl /etc/boundary.d/boundary.hcl
 
 
