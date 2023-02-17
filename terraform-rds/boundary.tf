@@ -92,9 +92,8 @@ resource "boundary_target" "rds-readwrite" {
     boundary_credential_library_vault.vault-library-readwrite[count.index].id
   
   ]
-  
-  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
-}
+  egress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""  
+}  
 
 resource "boundary_target" "rds-readonly" {
   name         = "rds-readonly-${var.environment}-${count.index}"
@@ -111,7 +110,9 @@ resource "boundary_target" "rds-readonly" {
     boundary_credential_library_vault.vault-library-readonly[count.index].id
   ]
   
-  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
+  
+  egress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""
+  
 }
 
 ####################################
@@ -261,15 +262,14 @@ resource "boundary_worker" "private-worker"{
      #Boundary info & restart the boundary-worker service
      provisioner "remote-exec" {
        inline=[
-         "sudo sed service boundary stop",
-         "sudo sed /home/ubuntu/provision-worker.sh",
+         "sudo bash /home/ubuntu/deploy-worker.sh",
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/boundary.hcl",
 	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/boundary.hcl",
          "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${aws_eip.boundary-worker.public_ip}/g'' /etc/boundary.d/boundary.hcl",
-	 "sudo sed -i ''s/ENVIRONMENT_TAG_HERE/${var.environment}/g'' /etc/boundary.d/boundary.hcl",
+	       "sudo sed -i ''s/ENVIRONMENT_TAG_HERE/${var.environment}/g'' /etc/boundary.d/boundary.hcl",
          "sudo sed -i ''s/PROJECT_TAG_HERE/${var.prefix}/g'' /etc/boundary.d/boundary.hcl",
-	 "sudo service boundary --full-restart"
+	       "sudo service boundary --full-restart"
        ]
      }
  }
