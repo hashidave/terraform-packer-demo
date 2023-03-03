@@ -1,10 +1,15 @@
-output "boundary_injected_connection_commands"{
+output "boundary_ro_brokered_connection_commands"{
   value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readonly[*].id )
 }
 
-output "boundary_brokered_connection_commands"{
-  value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readwrite[*].id)
+#output "boundary_rw-injected_connection_commands"{
+#  value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readwrite-injected[*].id)
+#}
+
+output "boundary_rw-brokered_connection_commands"{
+  value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readwrite-brokered[*].id)
 }
+
 
 output "hcp_boundary_worker_ip_from_boundary" {
   value = boundary_worker.private-worker.address
@@ -16,10 +21,10 @@ output "hcp_boundary_worker_ip_from_ec2" {
 
 ##########################################
 # for debugging only. turn this off...
-#output "random-password"{
-# value=random_password.pg-password.result
-# sensitive=true
-#}
+output "random-password"{
+ value=random_password.pg-password[*].result
+ sensitive=true
+}
 
 #output "boundary-vault-token"{
 # value= vault_token.boundary_vault_token.client_token
