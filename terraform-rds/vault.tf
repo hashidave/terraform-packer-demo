@@ -6,7 +6,7 @@ resource "vault_mount" "database" {
 
 locals{ 
   connection-urls = "${formatlist("postgres://dmradmin:%s@%s:%s/postgres", random_password.pg-password.result, aws_db_instance.db-instance[*].address, aws_db_instance.db-instance[*].port)}"
-}
+}  
 
 # Create a DB Connection
 resource "vault_database_secret_backend_connection" "postgres" {
