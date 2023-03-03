@@ -77,8 +77,8 @@ resource "boundary_credential_library_vault" "vault-library-readonly" {
 ####################################
 ######  The targets   ##############
 ####################################
-resource "boundary_target" "rds-readwrite" {
-  name         = "rds-readwrite-${var.environment}-${count.index}"
+resource "boundary_target" "rds-readwrite-brokered" {
+  name         = "rds-readwrite-brokered-${var.environment}-${count.index}"
   count        = var.db-count
   description  = "rds target with read-write creds brokered"
   type         = "tcp"
@@ -95,8 +95,29 @@ resource "boundary_target" "rds-readwrite" {
   egress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""  
 }  
 
+/*
+resource "boundary_target" "rds-readwrite-injected" {
+  name         = "rds-readwrite-injected-${var.environment}-${count.index}"
+  count        = var.db-count
+  description  = "rds target with read-write creds injected"
+  type         = "tcp"
+  default_port = "5432"
+  scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
+  host_source_ids = [
+    boundary_host_set_static.rds_host_set.id
+  ]
+  
+  injected_application_credential_source_ids = [
+    boundary_credential_library_vault.vault-library-readwrite[count.index].id
+  
+  ]
+  egress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"dev\" in \"/tags/env\""  
+}  
+*/
+
+
 resource "boundary_target" "rds-readonly" {
-  name         = "rds-readonly-${var.environment}-${count.index}"
+  name         = "rds-readonly-brokered-${var.environment}-${count.index}"
   description  = "rds target with read-only creds brokered"
   count        = var.db-count
   type         = "tcp"
@@ -169,17 +190,27 @@ resource "boundary_role" "readonly" {
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
   grant_scope_id= data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
 }
-
-resource "boundary_role" "readwrite" {
-  name          = "${var.prefix}-${var.environment}-readwrite-${count.index}"
+/*
+resource "boundary_role" "readwrite-injected" {
+  name          = "${var.prefix}-${var.environment}-readwrite-injected${count.index}"
   count         = var.db-count
-  description   = "A readwrite role"
+  description   = "An injected readwrite role"
   principal_ids = [boundary_user.mr-readwrite.id]
-  grant_strings = ["id=${boundary_target.rds-readwrite[count.index].id};actions=read,authorize-session"]
+  grant_strings = ["id=${boundary_target.rds-readwrite-injected[count.index].id};actions=read,authorize-session"]
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
   grant_scope_id= data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
 }
+*/
 
+resource "boundary_role" "readwrite-brokered" {
+  name          = "${var.prefix}-${var.environment}-readwrite-brokered${count.index}"
+  count         = var.db-count
+  description   = "A brokered readwrite role"
+  principal_ids = [boundary_user.mr-readwrite.id]
+  grant_strings = ["id=${boundary_target.rds-readwrite-brokered[count.index].id};actions=read,authorize-session"]
+  scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+  grant_scope_id= data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
+}
 
 #################################################################################################################
 ####  The self-managed worker                                                                               #####
