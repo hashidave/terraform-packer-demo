@@ -7,7 +7,7 @@
 
 variable "prefix" {
   description = "This prefix will be included in the name of most resources."
-  default     = "boundary-rds"
+  default     = "test-rds"
 }
 
 variable "region" {
@@ -17,7 +17,7 @@ variable "region" {
 
 #Set to dev or production to pull different channels from packer and deploy from
 #different TF workspaces
-variable "environment"{
+variable "environment" {
   default = "dev"
 }
 
@@ -86,6 +86,6 @@ variable boundary_auth_method_id{
 }
 
 
-variable "db-count"{
-  default = 2
+variable "db-count" {
+  default = 1
 }
