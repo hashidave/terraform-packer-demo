@@ -1,6 +1,6 @@
 ## Vault configuration
 resource "vault_mount" "database" {
-  path      = "${var.vault_db_mount}-${var.environment}"
+  path      = "${var.prefix}-${var.environment}"
   type      = "database"
 }
 
