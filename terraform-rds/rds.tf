@@ -11,7 +11,7 @@ resource "random_password" "pg-password" {
 
 
 resource "aws_db_subnet_group" "db-subnet-group" {
-  name       = "boundary-rds-demo-${var.environment}"
+  name       = "${var.prefix}-${var.environment}"
   subnet_ids = [aws_subnet.BoundaryRDS1.id, aws_subnet.BoundaryRDS2.id]
 
   tags = {
@@ -21,7 +21,7 @@ resource "aws_db_subnet_group" "db-subnet-group" {
 
 
 resource "aws_db_parameter_group" "BoundaryRDS" {
-  name   = "boundary-rds-${var.environment}"
+  name   = "${var.prefix}-${var.environment}"
   family = "postgres14"
 
   parameter {

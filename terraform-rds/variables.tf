@@ -10,6 +10,17 @@ variable "prefix" {
   default     = "test-rds"
 }
 
+variable "terraform-org"{
+  default ="hashi-DaveR"
+}
+
+variable "Owner" {
+  description = "The owner of this project."
+  default     = "hashiDaveR"
+}
+
+
+
 variable "region" {
   description = "The region where the resources are created."
   default     = "us-east-2"
@@ -76,9 +87,17 @@ variable "boundary-address"{
   default= "https://868bdfc7-61c6-4f31-b3a0-7bae78941aa0.boundary.hashicorp.cloud"
 }
 
-
 variable "boundary-cluster-id"{
   default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
+}
+
+# remote workspace where we get some boundary info
+# this assumes you have provisioned your overall boundary environment 
+# from another workspace
+# see https://github.com/hashidave/boundary-dmr which is what this repo
+# is dependent on
+variable "boundary-parent-workspace"{
+  default = "Boundary-Environment-dev"
 }
 
 variable boundary_auth_method_id{

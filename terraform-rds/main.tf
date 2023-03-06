@@ -7,10 +7,9 @@ provider "aws" {
   region = var.region
   default_tags {
     tags = {
-      Owner = "Dave"
+      Owner = "${var.Owner}"
       Demo       = "BoundaryRDS"
       Environment = var.environment      
-      Rep = "Tim"
       Workspace = terraform.workspace
     }
   }  
@@ -22,8 +21,8 @@ provider "aws" {
 ##############################################################
 #TODO:  Don't hardcode this.
 data "tfe_outputs" "Boundary" {
-  organization = "hashi-DaveR"
-  workspace = "Boundary-Environment-dev"
+  organization = var.terraform-org
+  workspace = var.boundary-parent-workspace
 }
 
 # My HCP Boundary instance
@@ -76,7 +75,7 @@ resource "aws_subnet" "BoundaryRDS1" {
   cidr_block = var.subnet1_prefix
   availability_zone = var.availability_zone_1
   tags = {
-    name = "${var.prefix}-subnet1"
+    name = "${var.prefix}-${var.environment}-subnet1"
   }
 }
 
@@ -86,7 +85,7 @@ resource "aws_subnet" "BoundaryRDS2" {
   availability_zone = var.availability_zone_2
 
   tags = {
-    name = "${var.prefix}-subnet2"
+    name = "${var.prefix}-${var.environment}-subnet2"
   }
 }
 
@@ -94,7 +93,7 @@ resource "aws_subnet" "BoundaryRDS2" {
 
 
 resource "aws_security_group" "BoundaryRDS" {
-  name = "${var.prefix}-security-group"
+  name = "${var.prefix}-${var.environment}-security-group"
 
   vpc_id = aws_vpc.BoundaryRDS.id
 
@@ -136,7 +135,7 @@ resource "aws_internet_gateway" "BoundaryRDS" {
   vpc_id = aws_vpc.BoundaryRDS.id
 
   tags = {
-    Name = "${var.prefix}-internet-gateway"
+    Name = "${var.prefix}-${var.environment}-internet-gateway"
   }
 }
 

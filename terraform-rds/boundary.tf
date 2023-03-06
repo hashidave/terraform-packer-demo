@@ -42,8 +42,8 @@ resource boundary_host_static rds_host{
 ############ Credential Info ##########
 #######################################
 resource "boundary_credential_store_vault" "vault-store-rds" {
-  name        = "vault-store-rds-${var.environment}"
-  description = "Demo connection to my HCP Vault for ${var.environment}"
+  name        = "vault-store-${var.prefix}-${var.environment}"
+  description = "Demo connection to my HCP Vault for ${var.prefix}-${var.environment}"
   #address     = var.vault-cluster
   address     = var.VAULT_ADDR
   token       = vault_token.boundary_vault_token.client_token
@@ -54,8 +54,8 @@ resource "boundary_credential_store_vault" "vault-store-rds" {
 ### Cred library for a dynamic secret from a read-write role
 resource "boundary_credential_library_vault" "vault-library-readwrite" {
   count               = var.db-count
-  name                = "hcp-vault-library-readwrite-${var.environment}-${count.index}"
-  description         = "HCP Vault credential library for read-write creds in ${var.environment} - ${count.index}"
+  name                = "hcp-vault-library-readwrite-${var.prefix}-${var.environment}-${count.index}"
+  description         = "HCP Vault credential library for read-write creds in ${var.prefix}-${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
   path                = "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.rw-role[count.index].name}"
@@ -64,9 +64,9 @@ resource "boundary_credential_library_vault" "vault-library-readwrite" {
 
 ### Cred library for a dynamic secret from a read-only role
 resource "boundary_credential_library_vault" "vault-library-readonly" {
-  name                = "hcp-vault-library-readonly-${var.environment}-${count.index}"
+  name                = "hcp-vault-library-readonly-${var.prefix}-${var.environment}-${count.index}"
   count               = var.db-count
-  description         = "HCP Vault credential library for read-only creds in ${var.environment} - ${count.index}"
+  description         = "HCP Vault credential library for read-only creds in ${var.prefix}-${var.environment} - ${count.index}"
   credential_store_id = boundary_credential_store_vault.vault-store-rds.id
   credential_type     = "username_password"
   path                = "${vault_mount.database.path}/creds/${vault_database_secret_backend_role.ro-role[count.index].name}"
@@ -78,9 +78,9 @@ resource "boundary_credential_library_vault" "vault-library-readonly" {
 ######  The targets   ##############
 ####################################
 resource "boundary_target" "rds-readwrite-brokered" {
-  name         = "rds-readwrite-brokered-${var.environment}-${count.index}"
+  name         = "rds-readwrite-brokered-${var.prefix}-${var.environment}-${count.index}"
   count        = var.db-count
-  description  = "rds target with read-write creds brokered"
+  description  = "rds target with read-write creds brokered for ${var.prefix}-${var.environment}-${count.index}"
   type         = "tcp"
   default_port = "5432"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
@@ -97,9 +97,9 @@ resource "boundary_target" "rds-readwrite-brokered" {
 
 /*
 resource "boundary_target" "rds-readwrite-injected" {
-  name         = "rds-readwrite-injected-${var.environment}-${count.index}"
+  name         = "rds-readwrite-injected-${var.prefix}-${var.environment}-${count.index}"
   count        = var.db-count
-  description  = "rds target with read-write creds injected"
+  description  = "rds target with read-write creds injected for ${var.prefix}-${var.environment}-${count.index}"
   type         = "tcp"
   default_port = "5432"
   scope_id     = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id 
@@ -117,8 +117,8 @@ resource "boundary_target" "rds-readwrite-injected" {
 
 
 resource "boundary_target" "rds-readonly" {
-  name         = "rds-readonly-brokered-${var.environment}-${count.index}"
-  description  = "rds target with read-only creds brokered"
+  name         = "rds-readonly-brokered-${var.prefix}-${var.environment}-${count.index}"
+  description  = "rds target with read-only creds brokered for ${var.prefix}-${var.environment}-${count.index}"
   count        = var.db-count
   type         = "tcp"
   default_port = "5432"
@@ -182,9 +182,9 @@ resource "boundary_user" "mr-readwrite" {
 ######  Test Roles    ##############
 ####################################
 resource "boundary_role" "readonly" {
-  name          = "${var.prefix}-${var.environment}-readonly-${count.index}"
+  name          = "${var.prefix}-${var.environment}-readwrite-${count.index}"
   count         = var.db-count
-  description   = "A readonly role"
+  description   = "A brokered readonly role for ${var.prefix}-${var.environment}-${count.index}"
   principal_ids = [boundary_user.mr-readonly.id]
   grant_strings = ["id=${boundary_target.rds-readonly[count.index].id};actions=read,authorize-session"]
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
@@ -205,7 +205,7 @@ resource "boundary_role" "readwrite-injected" {
 resource "boundary_role" "readwrite-brokered" {
   name          = "${var.prefix}-${var.environment}-readwrite-brokered${count.index}"
   count         = var.db-count
-  description   = "A brokered readwrite role"
+  description   = "A brokered readwrite role ${var.prefix}-${var.environment}-${count.index}"
   principal_ids = [boundary_user.mr-readwrite.id]
   grant_strings = ["id=${boundary_target.rds-readwrite-brokered[count.index].id};actions=read,authorize-session"]
   scope_id      = data.tfe_outputs.Boundary.nonsensitive_values.demo-project-id
@@ -223,8 +223,8 @@ resource "boundary_role" "readwrite-brokered" {
 # Create a controller-lead HCP Boundary Worker Object
 resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
-  description = "${var.prefix} Workflow Worker"
-  name        = "${var.prefix}-worker"
+  description = "${var.prefix}-${var.environment} Workflow Worker"
+  name        = "${var.prefix}-${var.environment}-worker"
 
   # The activation token on the HCP side is only available on the apply that creates the boundary_worker objevct
   # so if we later change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
@@ -252,7 +252,7 @@ resource "boundary_worker" "private-worker"{
   resource "aws_instance" "boundary-worker" {
     ami                         = data.hcp_packer_image.boundary-worker.cloud_image_id
  
-   instance_type               = var.instance_type
+    instance_type               = var.instance_type
     key_name                    = "DaveTestKey-Ohio"
     associate_public_ip_address = true
     subnet_id                   = aws_subnet.BoundaryRDS1.id
@@ -319,10 +319,10 @@ resource "aws_eip_association" "boundary-worker" {
 
 
 resource "aws_security_group" "boundary-worker" {
-  name = "boundary-worker-security-group"
+  name = "boundary-worker-security-group-${var.prefix}-${var.environment}"
 
   vpc_id = aws_vpc.BoundaryRDS.id
-ingress {
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
