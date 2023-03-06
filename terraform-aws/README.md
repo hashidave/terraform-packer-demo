@@ -39,7 +39,7 @@ All commands should run out of the terraform-rds folder.
 Make sure your terraform workspace for the https://github.com/hashidave/boundary-dmr repo has the state shared with the project for this repo.
 
 ### Vault
-Create a namespace to use.  This demo runs in HCP vault & assumes admin/terraform-demos but you can make whatever you want as long as you set the terraform variable described below.  
+Create a namespace to use.  This demo runs in HCP vault & assumes admin/terraform-workloads but you can make whatever you want as long as you set the terraform variable described below.  
 
 
 
