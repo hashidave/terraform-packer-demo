@@ -27,51 +27,15 @@ Third, you can find ways to improve it.  Pull requests are welcome.  There is st
 
 ## Deployment
 ### pre-requisites
-First of all:  Do ALL the things in the master repo instructions.  (navigate to ../ to find them)
+First of all:  Do ALL the things in the master repo instructions.  (navigate to ../README.md to find them)
 
 All commands should run out of the terraform-rds folder.
 
 Make sure your terraform workspace for the https://github.com/hashidave/boundary-dmr repo has the state shared with the project for this repo.
 
 ### Vault
-Create a namespace to use.  This demo runs in HCP vault & assumes admin/terraform-demos but you can make whatever you want as long as you set the terraform variable described below.  
+Create a namespace to use.  This demo runs in HCP vault & assumes a parent namespace of admin/terraform_workloads but you can make whatever you want as long as you set the terraform variable described below.  
 
--this policy called **create-db-mount**, created **inside your namespace of choice**:
-```
-  #Configure the database secrets engine and create roles
-  path "database/*" {
-    capabilities = [ "create", "read", "update", "delete", "list" ]
-  }
-  \# Write ACL policies
-  path "sys/policies/acl/*" {
-    capabilities = [ "create", "read", "update", "delete", "list" ]
-  }
-```
-
-- this policy called **general-token-policy** also created inside your namespace of choice
-```
-path "auth/token/lookup-self" {
-  capabilities = ["read"]
-}
-path "auth/token/renew-self" {
-  capabilities = ["update"]
-}
-path "auth/token/revoke-self" {
-  capabilities = ["update"]
-}
-path "auth/token/create" {
-  capabilities = ["create", "read", "update", "list"]
-}
-path "sys/leases/renew" {
-  capabilities = ["update"]
-}
-path "sys/leases/revoke" {
-  capabilities = ["update"]
-}
-path "sys/capabilities-self" {
-  capabilities = ["update"]
-}
-```
 
 - This policy called **terraform-demos** created in your **root** or **admin** namespace
 ```
@@ -101,7 +65,7 @@ path "sys/mounts/*" {
 #}
 ```
 
-- and this policy called **tf-create-token** also created in your **root** or **admin** namespace
+- and this policy called **tf-create-token** in your **root** or **admin** namespace
 ```
 path "auth/token/lookup-accessor" {
   capabilities = ["update"]
@@ -114,18 +78,11 @@ path "auth/token/revoke-accessor" {
 
 
 ### Terraform
-issue `terraform workspace new <name>` 
+For maxiumum ease of use, use this repo to create a new workspace:  https://github.com/hashidave/tfc-workspace-factory
+By default, one will be created called "workspace1". Use that one.
 
 tag that workspace with **boundary-rds**
 
-At a minimum, set these variables.  
--vault-cluster - the full https://xxx address of your vault.  HCP or otherwise
-
--vault-token - This should be set through an environment variable.  It is the token created by running ./create-vault-token.sh
-
--vault-namespace - the vault namespace to run this project in.  It need to be pre-existing so create it if it doesn't exist
-
--vault_db_mount - this repo creates a whole new db mount so we can play with it.  it will also be destroyed by terraform.  we default to "rds-demo-db" 
 
 -ssh_private_key - another environment var.  Should be the ssh key from the keypair you generated in the master repo instructions.  Pro-tip:  Take out the newlines before you try to paste it into an environment var. 
 
@@ -135,9 +92,8 @@ At a minimum, set these variables.
  
 - boundary_auth_method_id - the id of the auth method containing your tf-workspace user
  
-- TF_WORKSPACE_PWD - The password for the tf-workspace user 
-
 - db-count - the number of rds instances you want to spin up.  
 
 At this point, you should be feature-complete & ready to roll.  
 
+Run terraform init/plan/apply
