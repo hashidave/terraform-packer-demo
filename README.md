@@ -13,11 +13,13 @@ packer-aws - Packer build in AWS for a base ubuntu image, a web-app image, and a
 packer-gcp - DO NOT USE.  NOT STABLE.
 
 packer-win-aws - builds a Windows image for AWS.  Slated to be moved out of this repo.  
+
 terraform-aws-base-testing - test harness.  deploys just a base AWS ubuntu image for dev purposes
 
 terraform-aws-webapp-testing - test harness.  deploys just the AWS webapp server image for dev purposes
 
 terraform-aws - deploys some webservers along with a boundary worker
+
 terraform-rds - Deploys an rds environment instead of ec2 instances
 
 ### Branches
@@ -64,11 +66,10 @@ Set up HCP Boundary items
   - An AWS KeyPair.  save the private key
 ### Configure Vault
 Create these paths:
-   kv/GoldenImage-dev (or -prod or whatever your environment is called)
-     - private_key - the private key from the ssh keypair created above
-   kv/GoldenImage-UserPW-dev (same note applies)
+    kv/GoldenImage-UserPW-dev (same note applies)
      - username - name of your choice
      - password - password of your choice
+    
     kv/ubuntu-user
       - password - put a reasonably unpleasant password in here.  This will be used by Packer to do some 
                    image creation things.  
@@ -120,5 +121,6 @@ additional requirements.
 # terraform-packer-demo
 
 # Special Thanks
-Eric Reeves who pioneered Packer templates for TOLA and gave me a repo with the underpinnings of the packer/tf integration
-Nico Kabar who lent his insight and experience to this projet & who got me off high-center a few times.  
+***Eric Reeves*** who pioneered Packer templates for TOLA and gave me a repo with the underpinnings of the packer/tf integration
+
+***Nico Kabar*** who lent his insight and experience to this projet & who got me off high-center a few times.  
