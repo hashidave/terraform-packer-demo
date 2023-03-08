@@ -81,7 +81,7 @@ resource "boundary_target" "server-ssh" {
   
   ]
   
-  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
+  ingress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 }
 
 
@@ -100,7 +100,7 @@ resource "boundary_target" "server-ssh-brokered" {
      boundary_credential_library_vault.vault-library-brokered.id
   ]
 
-  worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
+  ingress_worker_filter="\"${var.prefix}\" in \"/tags/project\" and \"${var.environment}\" in \"/tags/env\""
 
 }
 
