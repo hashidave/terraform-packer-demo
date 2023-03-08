@@ -64,12 +64,10 @@ variable "default_username"{
 
 
 variable "boundary-address"{
-  default= "https://868bdfc7-61c6-4f31-b3a0-7bae78941aa0.boundary.hashicorp.cloud"
 }
 
 
 variable "boundary-cluster-id"{
-  default="868bdfc7-61c6-4f31-b3a0-7bae78941aa0"
 }
 
 
