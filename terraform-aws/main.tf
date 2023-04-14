@@ -24,6 +24,7 @@ provider "boundary" {
   password_auth_method_password   = data.tfe_outputs.Boundary.values.tf-workspace-pwd 
 }
 
+#This is a garbage line for testing VCS
 
 #
 # Core AWS Plumbing
