@@ -117,6 +117,7 @@ resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
   description = "Golden Image Workflow Worker for the ${var.prefix} ${var.environment} environment"
   name        = "${var.prefix}-${var.environment}-worker"
+  #worker_generated_auth_token=""
 
   # The activation token on the HCP side is only available on the apply that creates the boundary_worker objevct
   # so if we later change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
@@ -163,12 +164,19 @@ resource "boundary_worker" "private-worker"{
   # that we have to put into the config file.
   # should update in the future to use some kind of user-data structure that gets passed in
   # when the cloud provisions the instance
-  resource "null_resource" "worker-provisioner" {
-    triggers={
-      worker-id=aws_instance.boundary-worker.id,
-      worker-ip=aws_eip.boundary-worker.public_ip
-    }
-       
+  resource "terraform_data" "worker-provisioner" {
+    triggers_replace=[
+      aws_instance.boundary-worker,
+      aws_eip.boundary-worker, 
+      boundary_worker.private-worker
+    ]   
+ 
+    depends_on = [
+         aws_instance.boundary-worker,
+         boundary_worker.private-worker,
+         aws_eip.boundary-worker
+    ]
+
 
     connection {
        type     = "ssh"
