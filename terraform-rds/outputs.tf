@@ -1,3 +1,8 @@
+output "login-command-template"{
+  value="boundary authenticate password -auth-method-id ${boundary_auth_method_password.auth-method-pw.id} -login-name mr-readonly-<env>"
+
+}
+
 output "boundary_ro_brokered_connection_commands"{
   value=formatlist ("boundary connect postgres -target-id=%s -dbname=postgres", boundary_target.rds-readonly[*].id )
 }

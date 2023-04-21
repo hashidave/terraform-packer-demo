@@ -1,8 +1,16 @@
 #--------------------------------------------------------------------------------------
 # GCP Project and Region
 #--------------------------------------------------------------------------------------
-variable "gcp_project" {
-  default = "mystical-glass-360520"
+variable "prefix"{
+  default="terraform-dev"
+}
+
+variable "environment"{
+  default="dev"  
+}
+
+variable "project_id"{
+
 }
 
 variable "region" {
@@ -58,6 +66,11 @@ variable "private_ip" {
   default = "192.168.10.51"
 }
 
+variable "boundary_worker_ip" {
+  default = "192.168.10.52"
+}
+
+
 variable "hostname" {
   description = "Hostname of instances"
   default     = "web-app-1.alluvium.com"
@@ -78,3 +91,23 @@ variable "osdisk_size" {
 variable "vm_type" {   # gcloud compute machine-types list --filter="zone:us-east1-b and name:e2-micro"
   default = "e2-micro"
 }
+
+variable "ssh_private_key"{
+}
+
+#----------------------------------------------
+#     HCP Boundary Config
+#----------------------------------------------
+variable "boundary-cluster-id"{
+}
+
+variable "boundary-address"{
+}
+variable "VAULT_ADDR" {
+  description = "this gets populated from a workspace variable if you used the tfc workspace factory"
+ 
+}
+variable "TFC_VAULT_NAMESPACE" {
+  description = "this gets populated from a workspace variable"
+}
+

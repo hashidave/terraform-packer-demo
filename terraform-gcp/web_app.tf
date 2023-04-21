@@ -5,13 +5,10 @@ variable "hcp_bucket_name" {
   default = "acme-webapp"
 }
 
-variable "hcp_channel" {
-  default = "Dev"
-}
 
 data "hcp_packer_iteration" "ubuntu" {
   bucket_name = var.hcp_bucket_name
-  channel     = var.hcp_channel
+  channel     = var.environment
 }
 
 data "hcp_packer_image" "ubuntu_gcp" {
@@ -28,7 +25,7 @@ data "hcp_packer_image" "ubuntu_gcp" {
 resource "google_compute_instance" "terraform_instance" {
   name         = var.instances_name
   hostname     = var.hostname
-  project      = var.gcp_project
+  project      = var.project_id
   zone         = var.zone
   machine_type = var.vm_type
   
@@ -43,7 +40,7 @@ resource "google_compute_instance" "terraform_instance" {
   network_interface {
     network            = "${module.terraform_vpc.network_self_link}"
     subnetwork         = google_compute_subnetwork.terraform_sub.self_link
-    subnetwork_project = var.gcp_project
+    subnetwork_project = var.project_id
     network_ip         = var.private_ip
 
     access_config {

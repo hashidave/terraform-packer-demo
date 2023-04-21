@@ -2,28 +2,27 @@ terraform {
   required_providers {
     hcp = {
       source  = "hashicorp/hcp"
-      version = "0.23.1"
+      #version = "0.23.1"
     }
     google = {
       source  = "hashicorp/google"
       version = ">3.5.0"
     }
-    
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.2.0"
+    }
+    vault = {
+      source = "hashicorp/vault"
+    }
   }
-  
-  module "network_vpc" {
-    source  = "terraform-google-modules/network/google//modules/vpc"
-    version = "5.2.0"
-    # insert required variables here 
-  }
- 
   
   cloud {
     organization = "hashi-DaveR"
     hostname     = "app.terraform.io"
 
     workspaces {
-      name = "packer-terraform-demo"
+      tags = ["terraform-gcp"]
     }
   }
 }
