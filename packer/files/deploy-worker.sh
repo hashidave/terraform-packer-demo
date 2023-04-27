@@ -44,7 +44,10 @@ worker {
 EOF
 
 sudo chmod 755 ~/pki-worker.hcl
-sudo mv ~/pki-worker.hcl /etc/boundary.d/boundary.hcl
+
+# we always want to have a copy of this so we can replace
+# the config if something gets redeployed
+sudo cp ~/pki-worker.hcl /etc/boundary.d/boundary.hcl
 
 
 #Terraform provisioner will replace the XXX_HERE bits at deployment
