@@ -19,7 +19,6 @@ provider "aws" {
 ##############################################################
 ####   Get the project ID from the main boundary project  ####
 ##############################################################
-#TODO:  Don't hardcode this.
 data "tfe_outputs" "Boundary" {
   organization = var.terraform-org
   workspace = var.boundary-parent-workspace
