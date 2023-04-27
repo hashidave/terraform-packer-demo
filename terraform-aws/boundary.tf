@@ -119,11 +119,12 @@ resource "boundary_worker" "private-worker"{
   name        = "${var.prefix}-${var.environment}-worker"
   #worker_generated_auth_token=""
 
-  # The activation token on the HCP side is only available on the apply that creates the boundary_worker objevct
+  # The activation token on the HCP side is one-time use
   # so if we later change the worker ec2 instance for any reason we have to re-create the HCP boundary_worker
   # so that we can get the token back.  I supppose we could store it in Vault but that's a task for future Dave.
   lifecycle{
      replace_triggered_by=[aws_instance.boundary-worker]
+     ignore_changes=[worker_generated_auth_token, address]
   }
 }
 
@@ -166,13 +167,13 @@ resource "boundary_worker" "private-worker"{
   # when the cloud provisions the instance
   resource "terraform_data" "worker-provisioner" {
     triggers_replace=[
-      aws_instance.boundary-worker,
-      aws_eip.boundary-worker, 
-      boundary_worker.private-worker
+      #aws_instance.boundary-worker,
+      aws_eip.boundary-worker.id, 
+      boundary_worker.private-worker.id
     ]   
  
     depends_on = [
-         aws_instance.boundary-worker,
+         #aws_instance.boundary-worker,
          boundary_worker.private-worker,
          aws_eip.boundary-worker
     ]
@@ -191,17 +192,19 @@ resource "boundary_worker" "private-worker"{
      #Boundary info & restart the boundary-worker service
      provisioner "remote-exec" {
        inline=[
+         "sudo service boundary stop",
+         #replace the config with our template
+         "sudo cp ~/pki-worker.hcl /etc/boundary.d/boundary.hcl",
+         #Nuke the current working data
+         "sudo rm -rf /opt/boundary/worker1",
+         #Fill out the template
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/boundary.hcl",
-	
          "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/boundary.hcl",
-         
          "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${aws_eip.boundary-worker.public_ip}/g'' /etc/boundary.d/boundary.hcl",
-
          "sudo sed -i ''s/ENVIRONMENT_TAG_HERE/${var.environment}/g'' /etc/boundary.d/boundary.hcl",
-
          "sudo sed -i ''s/PROJECT_TAG_HERE/${var.prefix}/g'' /etc/boundary.d/boundary.hcl",
-
-	       "sudo service boundary --full-restart"
+         #finally, start boundary back up
+	       "sudo service boundary start"
        ]
      }
  }
