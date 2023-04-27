@@ -59,53 +59,22 @@ variable "aws_region" {
   default = "us-east-2"
 }
 
-data "hcp-packer-image" "aws" {
+data "hcp-packer-image" "aws_base" {
   cloud_provider = "aws"
   region         = var.aws_region
   bucket_name    = var.hcp_bucket_name_base
   iteration_id   = data.hcp-packer-iteration.acme-base.id
 }
 
-source "amazon-ebs" "boundary-worker" {
+source "amazon-ebs" "aws_base" {
   region         = var.aws_region
-  source_ami     = data.hcp-packer-image.aws.id
+  source_ami     = data.hcp-packer-image.aws_base.id
   instance_type  = "t2.nano"
   ssh_username   = "ubuntu"
   ssh_agent_auth = false
   ami_name       = "packer_aws_{{timestamp}}_${var.image_name}v${var.version}"
 } 
 
-#-------------------------
-# GCP Information
-#-------------------------
-#variable "gcp_project" {
-#  default = "mystical-glass-360520"
-#}
-
-#variable "gce_region" {
-#  default = "us-central1"
-#}
-
-#variable "gce_zone" {
-#  default = "us-central1-c"
-#}
-
-# Retrieve Latest Iteration ID for packer-terraform-demo/gce
-#data "hcp-packer-image" "gce" {
-#  cloud_provider = "gce"
-#  # The key is named "region", but in GCE it actually wants the "zone"
-#  region       = var.gce_zone
-#  bucket_name  = var.hcp_bucket_name_base
-#  iteration_id = data.hcp-packer-iteration.acme-base.id
-#}
-
-#source "googlecompute" "boundary-worker" {
-#  project_id   = var.gcp_project
-#  source_image = data.hcp-packer-image.gce.id
-#  zone         = var.gce_zone
- # # The AWS Ubuntu image uses user "ubuntu", so we shall do the same here
-#  ssh_username = "ubuntu"
-#}
 
 #--------------------------------------------------
 # Common Build Definition
@@ -126,14 +95,13 @@ build {
     build_labels = {
       "build-time"        = timestamp()
       "build-source"      = basename(path.cwd)
-      "acme-base-version" = data.hcp-packer-image.aws.labels.acme-base-version
+      "acme-base-version" = data.hcp-packer-image.aws_base.labels.acme-base-version
       "acme-app-version"  = var.version
     }
   }
 
   sources = [
-    "source.amazon-ebs.boundary-worker",
-    "source.googlecompute.boundary-worker"
+    "source.amazon-ebs.aws_base"
   ]
 
   provisioner "file" {
@@ -145,5 +113,5 @@ build {
      inline = ["bash /home/ubuntu/deploy-worker.sh"                                     
   
      ]
-    }
+   }
 }
