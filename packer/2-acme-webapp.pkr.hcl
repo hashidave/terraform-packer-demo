@@ -137,7 +137,7 @@ build {
 
   sources = [
     "source.amazon-ebs.acme-webapp",
-     "source.googlecompute.acme-webapp"
+    # "source.googlecompute.acme-webapp"
   ]
 
   provisioner "file" {
