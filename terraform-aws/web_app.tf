@@ -20,8 +20,8 @@ resource "aws_instance" "hashicat" {
   instance_type               = var.instance_type
   key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.hashicat.id
-  vpc_security_group_ids      = [aws_security_group.hashicat.id]
+  subnet_id                   = data.tfe_outputs.networks.values.general-subnet
+  vpc_security_group_ids      = [data.tfe_outputs.networks.values.default-security-group]
   count =var.server_count
   tags = {
     Type="web-server", 
@@ -66,8 +66,8 @@ resource "aws_instance" "hashicat2" {
   instance_type               = var.instance_type
   key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.hashicat.id
-  vpc_security_group_ids      = [aws_security_group.hashicat.id]
+  subnet_id                   = data.tfe_outputs.networks.values.default-subnet.id
+  vpc_security_group_ids      = [data.tfe_outputs.networks.values.default-security-group.id]
 
   tags = {
     Name = "${var.prefix}-HashiCat-Web-App2"
@@ -117,8 +117,8 @@ resource "aws_spot_instance_request" "hashicat_spot" {
   instance_type               = var.instance_type
   key_name                    = "DaveTestKey-Ohio"
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.hashicat.id
-  vpc_security_group_ids      = [aws_security_group.hashicat.id]
+  subnet_id                   = data.tfe_outputs.networks.values.default-subnet.id
+  vpc_security_group_ids      = [data.tfe_outputs.networks.values.default-security-group.id]
   
   #spot instance info
   spot_price = "0.01"

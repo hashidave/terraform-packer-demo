@@ -62,6 +62,9 @@ variable "default_username"{
   default     = "ubuntu"
 }
 
+variable terraform_org{
+  description = "our tf org"
+}
 
 variable "boundary-address"{
   default= "https://868bdfc7-61c6-4f31-b3a0-7bae78941aa0.boundary.hashicorp.cloud"
