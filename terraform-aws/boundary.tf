@@ -124,7 +124,7 @@ resource "boundary_worker" "private-worker"{
   # so that we can get the token back.  I supppose we could store it in Vault but that's a task for future Dave.
   lifecycle{
      replace_triggered_by=[aws_instance.boundary-worker]
-     ignore_changes=[worker_generated_auth_token, address]
+     #ignore_changes=[address]
   }
 }
 
@@ -149,7 +149,7 @@ resource "boundary_worker" "private-worker"{
    instance_type               = var.instance_type
     key_name                    = "DaveTestKey-Ohio"
     associate_public_ip_address = true
-    subnet_id                   = aws_subnet.hashicat.id
+    subnet_id                   = data.tfe_outputs.networks.values.general-subnet
     vpc_security_group_ids      = [aws_security_group.boundary-worker.id]
    
     tags = {
@@ -225,7 +225,7 @@ resource "aws_eip_association" "boundary-worker" {
 resource "aws_security_group" "boundary-worker" {
   name = "${var.prefix}-${var.environment}-boundary-worker-security-group"
 
-  vpc_id = aws_vpc.goldenimage.id
+  vpc_id = data.tfe_outputs.networks.values.vpc
 ingress {
     from_port   = 22
     to_port     = 22
