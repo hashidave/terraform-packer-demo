@@ -321,7 +321,7 @@ resource "aws_eip_association" "boundary-worker" {
 resource "aws_security_group" "boundary-worker" {
   name = "boundary-worker-security-group-${var.prefix}-${var.environment}"
 
-  vpc_id = aws_vpc.BoundaryRDS.id
+  vpc_id = data.tfe_outputs.networks.values.vpc
   ingress {
     from_port   = 22
     to_port     = 22

@@ -57,20 +57,17 @@ provider "vault"{
 #
 # Core AWS Plumbing
 #
-resource "aws_vpc" "BoundaryRDS" {
-  cidr_block           = var.address_space
-  enable_dns_hostnames = true
-
-  tags = {
-    name = "${var.prefix}-vpc-${var.region}"
-    environment = "production"
-  }
+# Get our global network info
+data "tfe_outputs" "networks" {
+  organization = var.terraform-org
+  workspace = "networks-${var.environment}"
 }
+
 
 
 # RDS Requires subnets in two availability zones
 resource "aws_subnet" "BoundaryRDS1" {
-  vpc_id     = aws_vpc.BoundaryRDS.id
+  vpc_id     = data.tfe_outputs.networks.values.vpc
   cidr_block = var.subnet1_prefix
   availability_zone = var.availability_zone_1
   tags = {
@@ -79,7 +76,7 @@ resource "aws_subnet" "BoundaryRDS1" {
 }
 
 resource "aws_subnet" "BoundaryRDS2" {
-  vpc_id     = aws_vpc.BoundaryRDS.id
+  vpc_id     = data.tfe_outputs.networks.values.vpc
   cidr_block = var.subnet2_prefix
   availability_zone = var.availability_zone_2
 
@@ -94,7 +91,7 @@ resource "aws_subnet" "BoundaryRDS2" {
 resource "aws_security_group" "BoundaryRDS" {
   name = "${var.prefix}-${var.environment}-security-group"
 
-  vpc_id = aws_vpc.BoundaryRDS.id
+  vpc_id = data.tfe_outputs.networks.values.vpc
 
   ingress {
     from_port   = 22
@@ -130,6 +127,7 @@ resource "aws_security_group" "BoundaryRDS" {
   }
 }
 
+/*
 resource "aws_internet_gateway" "BoundaryRDS" {
   vpc_id = aws_vpc.BoundaryRDS.id
 
@@ -146,13 +144,14 @@ resource "aws_route_table" "BoundaryRDS" {
     gateway_id = aws_internet_gateway.BoundaryRDS.id
   }
 }
+*/
 
 resource "aws_route_table_association" "BoundaryRDS1" {
   subnet_id      = aws_subnet.BoundaryRDS1.id
-  route_table_id = aws_route_table.BoundaryRDS.id
+  route_table_id = data.tfe_outputs.networks.values.default-route-table.id
 }
 
 resource "aws_route_table_association" "BoundaryRDS2" {
   subnet_id      = aws_subnet.BoundaryRDS2.id
-  route_table_id = aws_route_table.BoundaryRDS.id
+  route_table_id = data.tfe_outputs.networks.values.default-route-table.id
 }
