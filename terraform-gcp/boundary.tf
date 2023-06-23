@@ -1,4 +1,4 @@
-##############################################################
+/* ##############################################################
 ####   Get the project ID from the main boundary project  ####
 ##############################################################
 data "tfe_outputs" "Boundary" {
@@ -113,7 +113,7 @@ resource "boundary_target" "server-ssh-brokered" {
 # ###############################################################################################################
 
 # Create a controller-lead HCP Boundary Worker Object
-resource "boundary-worker" "private-worker"{
+resource "boundary_worker" "private-worker"{
   scope_id    = "global" 
   description = "Golden Image Workflow Worker for the ${var.prefix} ${var.environment} environment"
   name        = "${var.prefix}-${var.environment}-worker"
@@ -143,8 +143,8 @@ resource "boundary-worker" "private-worker"{
 
 resource "google_compute_instance" "boundary-worker" {
   name         = "${var.prefix}-${var.environment}-boundary-worker"
-  hostname     = "${var.prefix}-${var.environment}-boundary-worker"
-  project      = var.project_id
+  #hostname     = "${var.prefix}-${var.environment}-boundary-worker"
+  project      = var.GCP_Project_ID
   zone         = var.zone
   machine_type = var.vm_type
   
@@ -159,8 +159,8 @@ resource "google_compute_instance" "boundary-worker" {
   network_interface {
     network            = "${module.terraform_vpc.network_self_link}"
     subnetwork         = google_compute_subnetwork.terraform_sub.self_link
-    subnetwork_project = var.project_id
-    network_ip         = var.boundary-worker_ip
+    subnetwork_project = var.GCP_Project_ID
+    network_ip         = var.boundary_worker_ip
 
     access_config {
       // Include this section to give the VM an external ip address
@@ -218,7 +218,7 @@ resource "google_compute_instance" "boundary-worker" {
        inline=[
          "sudo sed -i ''s/CLUSTER_ID_HERE/${var.boundary-cluster-id}/g'' /etc/boundary.d/boundary.hcl",
 	
-         "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary-worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/boundary.hcl",
+         "sudo sed -i ''s/CONTROLLER_GENERATED_TOKEN_HERE/${boundary_worker.private-worker.controller_generated_activation_token}/g'' /etc/boundary.d/boundary.hcl",
          
          "sudo sed -i ''s/WORKER_PUBLIC_IP_HERE/${google_compute_instance.boundary-worker.network_interface.0.access_config.0.nat_ip}/g'' /etc/boundary.d/boundary.hcl",
 
@@ -237,7 +237,7 @@ resource "google_compute_instance" "boundary-worker" {
 # Firewall
 #---------------------------------------------------------------------------------------
 resource "google_compute_firewall" "boundary-worker" {
-  project     = var.project_id
+  project     = var.GCP_Project_ID
   name        = "allow-boundary-rule"
   network     = "${module.terraform_vpc.network_name}"
   description = "Creates firewall rule targeting tagged instances"
@@ -251,3 +251,4 @@ resource "google_compute_firewall" "boundary-worker" {
   timeouts {}
 }
 
+ */
