@@ -51,7 +51,7 @@ resource "aws_instance" "hashicat" {
 resource "aws_eip" "hashicat" {
   count = var.server_count
   instance = aws_instance.hashicat[count.index].id
-  vpc      = true
+  domain      = "vpc"
 }
 
 resource "aws_eip_association" "hashicat" {
@@ -94,7 +94,7 @@ resource "aws_instance" "hashicat2" {
 resource "aws_eip" "hashicat2" {
   count=var.server2_count
   instance = aws_instance.hashicat2[count.index].id
-  vpc      = true
+  domain      = "vpc"
 }
 
 resource "aws_eip_association" "hashicat2" {
@@ -149,7 +149,7 @@ resource "aws_spot_instance_request" "hashicat_spot" {
 resource "aws_eip" "hashicat_spot" {
   count=var.spot_instance_count
   instance = aws_spot_instance_request.hashicat_spot[count.index].spot_instance_id
-  vpc      = true
+  domain      = "vpc"
 }
 
 resource "aws_eip_association" "hashicat_spot" {
