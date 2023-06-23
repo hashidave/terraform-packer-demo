@@ -25,7 +25,7 @@ data "hcp_packer_image" "ubuntu_gcp" {
 resource "google_compute_instance" "terraform_instance" {
   name         = var.instances_name
   hostname     = var.hostname
-  project      = var.project_id
+  project      = var.GCP_Project_ID
   zone         = var.zone
   machine_type = var.vm_type
   
@@ -40,7 +40,7 @@ resource "google_compute_instance" "terraform_instance" {
   network_interface {
     network            = "${module.terraform_vpc.network_self_link}"
     subnetwork         = google_compute_subnetwork.terraform_sub.self_link
-    subnetwork_project = var.project_id
+    subnetwork_project = var.GCP_Project_ID
     network_ip         = var.private_ip
 
     access_config {
