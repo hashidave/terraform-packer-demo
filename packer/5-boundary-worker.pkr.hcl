@@ -45,7 +45,7 @@ variable "hcp_bucket_name_base" {
 # HCP Packer Registry
 # - Base Image Bucket and Channel
 #--------------------------------------------------
-# Returh the most recent Iteration (or build) of an image, given a Channel
+# Return the most recent Iteration (or build) of an image, given a Channel
 data "hcp-packer-iteration" "acme-base" {
   bucket_name = var.hcp_bucket_name_base
   channel     = var.base-image-channel
@@ -75,6 +75,37 @@ source "amazon-ebs" "aws_base" {
   ami_name       = "packer_aws_{{timestamp}}_${var.image_name}v${var.version}"
 } 
 
+#-------------------------
+# GCP Information
+#-------------------------
+variable "gcp_project" {
+  default = "mystical-glass-360520"
+}
+
+variable "gce_region" {
+  default = "us-central1"
+}
+
+variable "gce_zone" {
+  default = "us-central1-c"
+}
+
+# Retrieve Latest Iteration ID for packer-terraform-demo/gce
+data "hcp-packer-image" "gce" {
+  cloud_provider = "gce"
+  # The key is named "region", but in GCE it actually wants the "zone"
+  region       = var.gce_zone
+  bucket_name  = var.hcp_bucket_name_base
+  iteration_id = data.hcp-packer-iteration.acme-base.id
+}
+
+source "googlecompute" "acme-base" {
+  project_id   = var.gcp_project
+  source_image = data.hcp-packer-image.gce.id
+  zone         = var.gce_zone
+  # The AWS Ubuntu image uses user "ubuntu", so we shall do the same here
+  ssh_username = "ubuntu"
+}
 
 #--------------------------------------------------
 # Common Build Definition
@@ -101,7 +132,8 @@ build {
   }
 
   sources = [
-    "source.amazon-ebs.aws_base"
+    "source.amazon-ebs.aws_base",
+    "source.googlecompute.acme-base"
   ]
 
   provisioner "file" {
