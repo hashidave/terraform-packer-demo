@@ -100,7 +100,7 @@ data "hcp-packer-image" "gce" {
   iteration_id = data.hcp-packer-iteration.acme-base.id
 }
 
-source "googlecompute" "acme-webapp" {
+source "googlecompute" "acme-base" {
   project_id   = var.gcp_project
   source_image = data.hcp-packer-image.gce.id
   zone         = var.gce_zone
