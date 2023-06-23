@@ -9,10 +9,6 @@ variable "environment"{
   default="dev"  
 }
 
-variable "project_id"{
-
-}
-
 variable "region" {
   default = "us-central1"
 }
@@ -45,8 +41,7 @@ variable "firewall_name" {
   default = "terraform-firewall"
 }
 
-variable "subnetwork_project" {
-  default     = "mystical-glass-360520"
+variable "GCP_Project_ID" {  
 }
 
 variable "instances_name" {
