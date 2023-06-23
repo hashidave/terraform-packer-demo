@@ -11,7 +11,7 @@ module "terraform_vpc" {
       source  = "terraform-google-modules/network/google//modules/vpc"
       version = "6.0.1"
       network_name="terraform-demo"
-      project_id=var.project_id
+      project_id=var.GCP_Project_ID
 }
 
 
@@ -32,7 +32,7 @@ resource "google_compute_subnetwork" "terraform_sub" {
 # Firewall
 #---------------------------------------------------------------------------------------
 resource "google_compute_firewall" "web-server" {
-  project     = var.project_id
+  project     = var.GCP_Project_ID
   name        = "allow-http-rule"
   network     = "${module.terraform_vpc.network_name}"
   description = "Creates firewall rule targeting tagged instances"
