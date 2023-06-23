@@ -90,11 +90,11 @@ variable "gce_source_image" {
 }
 
 # Instantiate a googlecompute instance based on metadata above
-source "googlecompute" "acme-base" {
+source "googlecompute" "google-base" {
   project_id   = var.gcp_project
   source_image = var.gce_source_image
   zone         = var.gce_zone
-  instance_type="e2.micro"
+  #instance_type="e2.micro"
   # The AWS Ubuntu image uses user "ubuntu", so we shall do the same here
   ssh_username = "ubuntu"
 }
@@ -132,7 +132,7 @@ build {
 
   sources = [
     "source.amazon-ebs.acme-base",
-    #"source.googlecompute.acme-base"
+    "source.googlecompute.google-base"
   ]
 
   provisioner "file" {
