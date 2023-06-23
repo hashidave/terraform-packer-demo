@@ -212,7 +212,7 @@ resource "boundary_worker" "private-worker"{
 
 resource "aws_eip" "boundary-worker" {
   instance = aws_instance.boundary-worker.id
-  vpc      = true
+  domain      = "vpc"
 }
 
 resource "aws_eip_association" "boundary-worker" {
