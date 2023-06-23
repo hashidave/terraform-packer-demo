@@ -6,11 +6,11 @@ terraform {
     }
     google = {
       source  = "hashicorp/google"
-      version = ">3.5.0"
+      #version = ">3.5.0"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "4.2.0"
+      #version = "4.2.0"
     }
     vault = {
       source = "hashicorp/vault"
