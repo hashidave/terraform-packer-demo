@@ -105,6 +105,7 @@ source "googlecompute" "acme-base" {
   zone         = var.gce_zone
   # The AWS Ubuntu image uses user "ubuntu", so we shall do the same here
   ssh_username = "ubuntu"
+  machine_type="e2-micro"
 }
 
 #--------------------------------------------------
