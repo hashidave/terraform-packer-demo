@@ -3,13 +3,13 @@
 #########
 ####  Gets the bits for boundary & writes a stub config file that will be altered 
 ####  when Terraform deploys the actual system
-sudo apt-get update && sudo apt-get install boundary-worker-hcp
+sudo apt-get update && sudo apt-get install boundary-enterprise
 
 sudo service boundary stop
 sudo rm -rf /opt/boundary
 
 # cleanup boundary service file
-sudo sed -i 's/boundary server/boundary-worker server/g' /usr/lib/systemd/system/boundary.service
+#sudo sed -i 's/boundary server/boundary-worker server/g' /usr/lib/systemd/system/boundary.service
 sudo sed -i 's/%i/boundary/g' /usr/lib/systemd/system/boundary.service
 sudo mkdir /opt/boundary
 sudo chown boundary:boundary /opt/boundary
