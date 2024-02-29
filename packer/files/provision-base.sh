@@ -20,6 +20,11 @@ sudo echo "$USER:$UBUNTU_PASSWORD" | sudo chpasswd
 # NOTE: This doesn't seem to be working as of 4/10/23
 sudo sed -i 's/PasswordAuthentication\ no/PasswordAuthentication\ yes/g' /etc/ssh/sshd_config
 
+# make vim usable by default
+echo "colorscheme delek" >> ~/.vimrc
+echo "set number" >> ~/.vimrc
+
+
 # Clear the history file
 history -c
 
