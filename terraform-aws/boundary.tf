@@ -41,7 +41,7 @@ resource "boundary_credential_store_vault" "vault-store" {
 ### Cred library for injected creds
 
 resource "boundary_credential_library_vault" "vault-library" {
-  name                = "hcp-vault-library-${var.prefix}{-${var.environment}"
+  name                = "hcp-vault-library-${var.prefix}-${var.environment}"
   description         = "HCP Vault credential library for ${var.environment}"
   credential_store_id = boundary_credential_store_vault.vault-store.id
   credential_type     = "ssh_private_key"
