@@ -67,7 +67,7 @@ data "hcp-packer-image" "aws" {
   iteration_id   = data.hcp-packer-iteration.acme-base.id
 }
 
-source "amazon-ebs" "acme-webapp" {
+source "amazon-ebs" "acme-base" {
   region         = var.aws_region
   source_ami     = data.hcp-packer-image.aws.id
   instance_type  = "t2.small"
@@ -136,8 +136,8 @@ build {
   }
 
   sources = [
-    "source.amazon-ebs.acme-webapp",
-    # "source.googlecompute.acme-webapp"
+    "source.amazon-ebs.acme-base",
+    "source.googlecompute.acme-base"
   ]
 
   provisioner "file" {
