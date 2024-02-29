@@ -68,13 +68,6 @@ resource "random_password" "user-password" {
   override_special = "+_-"
 }
 
-# have to introduce a delay between creating the kv2 mount & trying 
-# to write a secret to it.
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [vault_mount.kv]
-  create_duration = "30s"
-}
-
 resource "vault_kv_secret_v2" "userdata" {
   mount                      = vault_mount.kv.path
   name                       = "userdata"
@@ -92,4 +85,11 @@ resource "vault_kv_secret_v2" "userdata" {
   }
   # gotta wait a bit..
   depends_on = [time_sleep.wait_30_seconds]
+}
+
+# have to introduce a delay between creating the kv2 mount & trying 
+# to write a secret to it.
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [vault_mount.kv]
+  create_duration = "30s"
 }
